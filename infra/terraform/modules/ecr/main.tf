@@ -26,9 +26,9 @@ resource "aws_ecr_lifecycle_policy" "api" {
         rulePriority = 1
         description  = "최근 30개 이미지만 유지"
         selection = {
-          tagStatus     = "any"
-          countType     = "imageCountMoreThan"
-          countNumber   = 30
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 30
         }
         action = {
           type = "expire"

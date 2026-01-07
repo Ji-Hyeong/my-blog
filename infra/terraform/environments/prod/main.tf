@@ -23,26 +23,26 @@ module "ecr" {
 module "alb" {
   source = "../../modules/alb"
 
-  project_name       = var.project_name
-  vpc_id             = module.network.vpc_id
-  public_subnet_ids  = module.network.public_subnet_ids
-  target_port        = var.api_container_port
-  enable_https       = var.enable_https
-  certificate_arn    = var.certificate_arn
-  health_check_path  = "/api/health"
+  project_name      = var.project_name
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
+  target_port       = var.api_container_port
+  enable_https      = var.enable_https
+  certificate_arn   = var.certificate_arn
+  health_check_path = "/api/health"
 }
 
 module "ecs_service" {
   source = "../../modules/ecs_service"
 
-  project_name        = var.project_name
-  vpc_id              = module.network.vpc_id
-  public_subnet_ids   = module.network.public_subnet_ids
+  project_name          = var.project_name
+  vpc_id                = module.network.vpc_id
+  public_subnet_ids     = module.network.public_subnet_ids
   alb_security_group_id = module.alb.alb_security_group_id
-  target_group_arn    = module.alb.target_group_arn
+  target_group_arn      = module.alb.target_group_arn
 
-  container_image     = var.api_image
-  container_port      = var.api_container_port
-  desired_count       = var.api_desired_count
-  environment         = var.api_environment
+  container_image = var.api_image
+  container_port  = var.api_container_port
+  desired_count   = var.api_desired_count
+  environment     = var.api_environment
 }
