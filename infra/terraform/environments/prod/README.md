@@ -22,3 +22,5 @@
 - HTTPS(ALB 443)를 켜려면 ACM 인증서 ARN이 필요합니다.
 - Cloudflare DNS를 사용한다면:
   - `api.<domain>` → ALB DNS name으로 CNAME 설정
+
+- 2026-01-07: trigger prod apply
