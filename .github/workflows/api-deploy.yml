@@ -58,7 +58,8 @@ jobs:
       - name: Build and push Docker image (latest)
         env:
           ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          # ECR repository name은 비밀값이 아니므로 하드코딩합니다(Terraform 기본 네이밍).
+          ECR_REPOSITORY: jh-blog-api
           IMAGE_TAG: latest
         run: |
           set -euo pipefail
@@ -71,8 +72,9 @@ jobs:
 
       - name: Force ECS service redeploy
         env:
-          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-          ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+          # ECS cluster/service 이름은 비밀값이 아니므로 하드코딩합니다(Terraform 기본 네이밍).
+          ECS_CLUSTER: jh-blog-cluster
+          ECS_SERVICE: jh-blog-api-svc
         run: |
           set -euo pipefail
           aws ecs update-service \

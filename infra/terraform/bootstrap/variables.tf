@@ -14,6 +14,8 @@ variable "aws_region" {
 variable "state_bucket_name" {
   description = "Terraform state를 저장할 S3 bucket 이름"
   type        = string
+  # bucket/key/table은 비밀값이 아니며, 개인 프로젝트에서는 기본값으로 고정해도 충분합니다.
+  default     = "jihyeong-my-blog-tfstate-906518091264"
 }
 
 variable "lock_table_name" {
@@ -21,4 +23,3 @@ variable "lock_table_name" {
   type        = string
   default     = "terraform-lock"
 }
-

@@ -56,24 +56,15 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform init (remote backend)
-        # backend 값은 GitHub Secrets로만 관리합니다.
         run: |
           terraform init \
-            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
-            -backend-config="key=${{ secrets.TF_STATE_KEY }}" \
-            -backend-config="region=ap-northeast-2" \
-            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+            -backend-config=backend.hcl
 
       - name: Terraform validate
         run: terraform validate
 
       - name: Terraform plan
         id: plan
-        env:
-          # 인프라에서 필요한 값(이미지 URL 등)은 GitHub Secrets로 관리합니다.
-          TF_VAR_api_image: ${{ secrets.API_IMAGE }}
-          TF_VAR_enable_https: ${{ secrets.ENABLE_HTTPS }}
-          TF_VAR_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
         run: |
           set -euo pipefail
           terraform plan -no-color -out=tfplan 2>&1 | tee plan.txt

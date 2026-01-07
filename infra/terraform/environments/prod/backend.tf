@@ -9,11 +9,7 @@
  *   `-backend-config` 옵션을 사용하세요.
  *
  * 사용 예:
- *   terraform init \
- *     -backend-config="bucket=YOUR_BUCKET" \
- *     -backend-config="key=apps/prod/terraform.tfstate" \
- *     -backend-config="region=ap-northeast-2" \
- *     -backend-config="dynamodb_table=YOUR_LOCK_TABLE"
+ *   terraform init -backend-config=backend.hcl
  */
 
 # terraform {

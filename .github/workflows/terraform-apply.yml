@@ -100,16 +100,9 @@ jobs:
       - name: Terraform init (remote backend)
         run: |
           terraform init \
-            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
-            -backend-config="key=${{ secrets.TF_STATE_KEY }}" \
-            -backend-config="region=ap-northeast-2" \
-            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+            -backend-config=backend.hcl
 
       - name: Terraform apply
-        env:
-          TF_VAR_api_image: ${{ secrets.API_IMAGE }}
-          TF_VAR_enable_https: ${{ secrets.ENABLE_HTTPS }}
-          TF_VAR_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
         run: terraform apply -auto-approve
 
       - name: Comment result

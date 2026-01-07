@@ -15,12 +15,8 @@
 ### GitHub Secrets (필수)
 
 - (워크플로우에 하드코딩) Terraform용 AssumeRole ARN
-- `TF_STATE_BUCKET`: Terraform state S3 bucket 이름
-- `TF_STATE_KEY`: 예) `apps/prod/terraform.tfstate`
-- `TF_STATE_LOCK_TABLE`: Terraform lock DynamoDB table 이름
-- `API_IMAGE`: Terraform이 참조할 API 이미지(예: `<account>.dkr.ecr.ap-northeast-2.amazonaws.com/jh-blog-api:latest`)
-- `ENABLE_HTTPS`: `true` 또는 `false`
-- `ACM_CERTIFICATE_ARN`: `ENABLE_HTTPS=true`일 때 필요한 ACM 인증서 ARN (예: `*.jihyeong.com`)
+- Remote state/backend 값은 `infra/terraform/environments/prod/backend.hcl`에 고정(비밀값 아님)
+- 환경 변수 값은 `infra/terraform/environments/prod/ci.auto.tfvars.json`에 고정(비밀값 아님)
 
 > 메모: `ENABLE_HTTPS`는 Terraform 변수 타입이 bool이라 `true/false` 형태가 안전합니다.
 
@@ -44,9 +40,7 @@ Access Key를 GitHub Secrets에 저장하지 않기 위해, AWS에 “OIDC 신�
 ### GitHub Secrets (필수)
 
 - (워크플로우에 하드코딩) API 배포용 AssumeRole ARN
-- `ECR_REPOSITORY`: 예) `jh-blog-api` (ECR repo name)
-- `ECS_CLUSTER`: 예) `jh-blog-cluster`
-- `ECS_SERVICE`: 예) `jh-blog-api-svc`
+- ECR/ECS 리소스명은 워크플로우에 하드코딩(Terraform 기본 네이밍, 비밀값 아님)
 
 > 주의: 이 배포 방식은 Terraform에서 `api_image`를 `:latest`로 고정하는 것을 전제로 합니다.
 
