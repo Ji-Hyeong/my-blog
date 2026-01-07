@@ -1,5 +1,5 @@
 /**
- * dev 환경 메인 스택
+ * prod 환경 메인 스택
  *
  * 구성 개요:
  * - network: VPC + public subnets
@@ -44,5 +44,5 @@ module "ecs_service" {
   container_image     = var.api_image
   container_port      = var.api_container_port
   desired_count       = var.api_desired_count
+  environment         = var.api_environment
 }
-

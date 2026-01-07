@@ -1,4 +1,4 @@
-# dev 환경 (Seoul)
+# prod 환경 (Seoul)
 
 `apps/api`를 ECS Fargate + ALB로 배포하기 위한 환경 스택입니다.
 
@@ -22,4 +22,3 @@
 - HTTPS(ALB 443)를 켜려면 ACM 인증서 ARN이 필요합니다.
 - Cloudflare DNS를 사용한다면:
   - `api.<domain>` → ALB DNS name으로 CNAME 설정
-

@@ -1,0 +1,81 @@
+#
+# API Deploy (ECR -> ECS)
+#
+# 목적:
+# - `apps/api/**` 변경이 main에 반영되면 API 컨테이너 이미지를 빌드해 ECR에 push합니다.
+# - ECS 서비스는 `latest` 태그를 참조하도록 유지하고, push 후 “강제 새 배포”로 이미지를 갱신합니다.
+#
+# 왜 latest인가?
+# - 개인 프로젝트에서는 “Terraform drift”를 피하면서 배포를 단순화하는 것이 중요합니다.
+# - Terraform은 이미지 문자열을 `<repo>:latest`로 고정하고,
+#   CI는 latest를 갱신한 뒤 `update-service --force-new-deployment`로 새 태스크를 띄웁니다.
+#
+# 보안:
+# - AWS 인증은 GitHub OIDC AssumeRole을 사용합니다.
+#
+
+name: api-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - ".github/workflows/api-deploy.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  # 동시에 여러 배포가 겹치면 최신만 남기는 것이 안전합니다.
+  group: api-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image (latest)
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          set -euo pipefail
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+
+          docker build -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+
+          echo "IMAGE_URI=${IMAGE_URI}" >> $GITHUB_ENV
+
+      - name: Force ECS service redeploy
+        env:
+          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+        run: |
+          set -euo pipefail
+          aws ecs update-service \
+            --cluster "${ECS_CLUSTER}" \
+            --service "${ECS_SERVICE}" \
+            --force-new-deployment
+

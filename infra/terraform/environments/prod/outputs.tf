@@ -7,4 +7,3 @@ output "alb_dns_name" {
   description = "ALB DNS name (Cloudflare에서 CNAME 대상으로 사용)"
   value       = module.alb.alb_dns_name
 }
-

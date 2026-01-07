@@ -9,7 +9,7 @@
 ## 디렉토리 구조
 
 - `bootstrap/`: Terraform remote state(S3 + DynamoDB lock) 생성을 위한 1회성 스택
-- `environments/dev/`: 개발 환경(서울 리전) 스택
+- `environments/prod/`: 프로덕션 환경(서울 리전) 스택
 - `modules/`: 재사용 가능한 Terraform 모듈
 
 ## 사전 준비
@@ -31,7 +31,7 @@ Terraform state를 Git에 올리지 않기 위해 S3 backend + DynamoDB lock을 
    - state bucket
    - lock table
    를 생성합니다.
-2. `environments/dev/`에서 `backend.tf`를 활성화해 remote state로 전환합니다.
+2. `environments/prod/`에서 `backend.tf`를 활성화해 remote state로 전환합니다.
 
 > 주의: bootstrap을 remote backend로 올리면 “닭-달걀” 문제가 생깁니다.
 
@@ -54,4 +54,3 @@ Terraform state를 Git에 올리지 않기 위해 S3 backend + DynamoDB lock을 
 - 개인 프로젝트에서 비용이 튀는 주범은 “트래픽”보다 **고정비(ALB, NAT Gateway)** 인 경우가 많습니다.
 - 본 구성은 비용 방어를 위해 NAT Gateway를 사용하지 않습니다.
 - 그럼에도 ALB는 상시 과금이므로, “항상 1태스크 유지” 전략과 함께 예산을 주기적으로 확인하세요.
-

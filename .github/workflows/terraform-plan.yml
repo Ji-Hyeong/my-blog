@@ -1,0 +1,108 @@
+#
+# Terraform PR Plan
+#
+# 목적:
+# - `apps/infra/terraform/**` 변경이 있는 PR에서만 `terraform fmt/validate/plan`을 수행합니다.
+# - plan 결과 요약을 PR 코멘트로 남겨 “리뷰 가능한 인프라 변경” 흐름을 만듭니다.
+#
+# 보안:
+# - AWS 인증은 GitHub OIDC를 통해 AssumeRole로 처리합니다(Access Key를 Secrets에 저장하지 않음).
+# - plan 출력에는 민감 값이 섞일 수 있으므로, Terraform에서 `sensitive = true`를 적극 활용하세요.
+#
+
+name: terraform-plan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "infra/terraform/**"
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  # 같은 PR에서 plan이 중복 실행되면 가장 최신 실행만 남기기 위해 그룹을 PR 기준으로 잡습니다.
+  group: terraform-plan-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: infra/terraform/environments/prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.6"
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform fmt (check)
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init (remote backend)
+        # backend 값은 GitHub Secrets로만 관리합니다.
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ secrets.TF_STATE_KEY }}" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        id: plan
+        env:
+          # 인프라에서 필요한 값(이미지 URL 등)은 GitHub Secrets로 관리합니다.
+          TF_VAR_api_image: ${{ secrets.API_IMAGE }}
+          TF_VAR_enable_https: ${{ secrets.ENABLE_HTTPS }}
+          TF_VAR_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
+        run: |
+          set -euo pipefail
+          terraform plan -no-color -out=tfplan 2>&1 | tee plan.txt
+
+      - name: Comment plan summary
+        uses: actions/github-script@v7
+        env:
+          PLAN_TXT: ${{ steps.plan.outcome }}
+        with:
+          script: |
+            const fs = require("fs");
+            const path = "infra/terraform/environments/prod/plan.txt";
+            const body = fs.existsSync(path) ? fs.readFileSync(path, "utf8") : "plan output not found";
+
+            // GitHub 코멘트는 너무 길면 실패할 수 있어, 길이를 제한합니다.
+            const trimmed = body.length > 65000 ? body.slice(0, 65000) + "\n\n...truncated" : body;
+            const comment = [
+              "### Terraform plan (prod)",
+              "",
+              "```",
+              trimmed,
+              "```",
+              "",
+              "적용하려면 PR 코멘트에 `/apply`를 남겨주세요.",
+            ].join("\n");
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment,
+            });
+
