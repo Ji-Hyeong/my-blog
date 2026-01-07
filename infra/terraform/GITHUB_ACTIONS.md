@@ -14,7 +14,7 @@
 
 ### GitHub Secrets (필수)
 
-- `AWS_ROLE_ARN`: GitHub OIDC로 AssumeRole할 IAM Role ARN
+- `AWS_TERRAFORM_ROLE_ARN`: GitHub OIDC로 AssumeRole할 Terraform용 IAM Role ARN
 - `AWS_REGION`: `ap-northeast-2`
 - `TF_STATE_BUCKET`: Terraform state S3 bucket 이름
 - `TF_STATE_KEY`: 예) `apps/prod/terraform.tfstate`
@@ -44,7 +44,8 @@ Access Key를 GitHub Secrets에 저장하지 않기 위해, AWS에 “OIDC 신�
 
 ### GitHub Secrets (필수)
 
-- `AWS_ROLE_ARN`, `AWS_REGION`: Terraform과 동일
+- `AWS_API_DEPLOY_ROLE_ARN`: GitHub OIDC로 AssumeRole할 API 배포용 IAM Role ARN
+- `AWS_REGION`: Terraform과 동일
 - `ECR_REPOSITORY`: 예) `jh-blog-api` (ECR repo name)
 - `ECS_CLUSTER`: 예) `jh-blog-cluster`
 - `ECS_SERVICE`: 예) `jh-blog-api-svc`
@@ -59,4 +60,3 @@ Access Key를 GitHub Secrets에 저장하지 않기 위해, AWS에 “OIDC 신�
 
 추후 확장:
 - ECS task definition에서 SSM Parameter Store를 secrets로 주입(또는 애플리케이션에서 런타임에 SSM 조회)
-
