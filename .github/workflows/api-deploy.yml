@@ -47,8 +47,9 @@ jobs:
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_API_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          # ARN은 비밀값이 아니라 리소스 식별자이므로, 초기에는 워크플로우에 직접 고정합니다.
+          role-to-assume: arn:aws:iam::906518091264:role/gh-my-blog-api-deploy
+          aws-region: ap-northeast-2
 
       - name: Login to Amazon ECR
         id: ecr

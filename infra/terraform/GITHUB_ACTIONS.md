@@ -14,8 +14,7 @@
 
 ### GitHub Secrets (필수)
 
-- `AWS_TERRAFORM_ROLE_ARN`: GitHub OIDC로 AssumeRole할 Terraform용 IAM Role ARN
-- `AWS_REGION`: `ap-northeast-2`
+- (워크플로우에 하드코딩) Terraform용 AssumeRole ARN
 - `TF_STATE_BUCKET`: Terraform state S3 bucket 이름
 - `TF_STATE_KEY`: 예) `apps/prod/terraform.tfstate`
 - `TF_STATE_LOCK_TABLE`: Terraform lock DynamoDB table 이름
@@ -44,8 +43,7 @@ Access Key를 GitHub Secrets에 저장하지 않기 위해, AWS에 “OIDC 신�
 
 ### GitHub Secrets (필수)
 
-- `AWS_API_DEPLOY_ROLE_ARN`: GitHub OIDC로 AssumeRole할 API 배포용 IAM Role ARN
-- `AWS_REGION`: Terraform과 동일
+- (워크플로우에 하드코딩) API 배포용 AssumeRole ARN
 - `ECR_REPOSITORY`: 예) `jh-blog-api` (ECR repo name)
 - `ECS_CLUSTER`: 예) `jh-blog-cluster`
 - `ECS_SERVICE`: 예) `jh-blog-api-svc`

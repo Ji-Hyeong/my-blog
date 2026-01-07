@@ -48,8 +48,9 @@ jobs:
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          # ARN은 비밀값이 아니라 리소스 식별자이므로, 초기에는 워크플로우에 직접 고정합니다.
+          role-to-assume: arn:aws:iam::906518091264:role/gh-my-blog-terraform
+          aws-region: ap-northeast-2
 
       - name: Terraform fmt (check)
         run: terraform fmt -check -recursive
@@ -60,7 +61,7 @@ jobs:
           terraform init \
             -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
             -backend-config="key=${{ secrets.TF_STATE_KEY }}" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="region=ap-northeast-2" \
             -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}"
 
       - name: Terraform validate
