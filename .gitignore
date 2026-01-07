@@ -8,10 +8,15 @@ api/.gradle/
 api/build/
 api/out/
 
+# Terraform
+infra/terraform/**/.terraform/
+infra/terraform/**/*.tfstate
+infra/terraform/**/*.tfstate.*
+infra/terraform/**/crash.log
+
 # IntelliJ / VSCode
 .idea/
 .vscode/
 
 # OS
 .DS_Store
-
