@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>결제 트래픽 급증 대응기</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body>
+    <!-- Lightweight post layout reuses shared styles. -->
+    <header class="site-header">
+      <div class="container nav-row">
+        <div class="brand">JH · Backend</div>
+        <nav class="nav-links">
+          <a class="nav-link" href="../index.html">Home</a>
+          <a class="nav-link" href="../resume.html">Resume</a>
+          <a class="nav-link" href="../builder.html">Tailor</a>
+          <a class="nav-link" href="../blog.html">Blog</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="reveal" data-delay="0.05">
+        <p class="post-meta">Case Study · 2026-01-05</p>
+        <h1 class="page-title">결제 트래픽 급증 대응기</h1>
+        <p>
+          캠페인 기간 동안 결제 트래픽이 3배 이상 증가했을 때,
+          시스템 안정성을 유지하기 위해 취한 단계별 대응을 정리합니다.
+        </p>
+      </section>
+
+      <section class="section reveal" data-delay="0.1">
+        <h2>문제 상황</h2>
+        <p>
+          결제 요청이 급증하면서 타임아웃과 중복 요청이 동시에 발생했고,
+          일부 트랜잭션은 재시도로 인해 부하가 가중되는 상황이었습니다.
+        </p>
+      </section>
+
+      <section class="section reveal" data-delay="0.15">
+        <h2>대응 전략</h2>
+        <p>
+          1) 대기열을 분리하여 핵심 결제 흐름을 우선 처리하고,
+          2) 멱등성 키 기준으로 재시도를 제한했으며,
+          3) 모니터링 지표를 SLO 기준으로 재정의했습니다.
+        </p>
+      </section>
+
+      <section class="section reveal" data-delay="0.2">
+        <h2>결과</h2>
+        <p>
+          실패율을 0.8% 이하로 안정화했고, 평균 지연 시간은 34% 감소했습니다.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <span>Back to focused operations.</span>
+      </div>
+    </footer>
+
+    <script src="../assets/app.js"></script>
+  </body>
+</html>

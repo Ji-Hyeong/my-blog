@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- index.html과 동일한 API 기본 주소 규칙을 사용합니다. -->
+    <meta name="api-base-url" content="" />
+    <title>Resume · Backend Engineer</title>
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <!-- Shared navigation for quick access to builder and blog. -->
+    <header class="site-header">
+      <div class="container nav-row">
+        <div class="brand">JH · Backend</div>
+        <nav class="nav-links">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="resume.html">Resume</a>
+          <a class="nav-link" href="builder.html">Tailor</a>
+          <a class="nav-link" href="blog.html">Blog</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="reveal" data-delay="0.05">
+        <h1 class="page-title">기본 이력서</h1>
+        <p>
+          정리해둔 전체 이력을 모아둔 페이지입니다. 필요하면 Tailor에서
+          일부만 골라서 출력하세요.
+        </p>
+      </section>
+
+      <!-- Resume content will be injected by resume.js from API (/api/profile). -->
+      <section id="resume" class="section reveal" data-delay="0.1"></section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <span>Resume is synced with profile data.</span>
+      </div>
+    </footer>
+
+    <script src="assets/app.js"></script>
+    <script src="assets/resume.js"></script>
+  </body>
+</html>

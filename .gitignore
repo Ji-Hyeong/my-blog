@@ -1,0 +1,17 @@
+# Node (web)
+web/node_modules/
+web/dist/
+web/.vite/
+
+# Gradle / Java (api)
+api/.gradle/
+api/build/
+api/out/
+
+# IntelliJ / VSCode
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+

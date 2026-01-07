@@ -19,10 +19,12 @@ class WebConfig : WebMvcConfigurer {
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry
 			.addMapping("/api/**")
+			// 로컬 개발(Vite)과 동일 오리진 배포(프론트+백엔드 통합) 모두를 고려합니다.
+			// - 로컬: Vite dev server (http://localhost:5173)
+			// - 배포: 프론트와 백엔드를 같은 도메인에서 서빙하면 CORS가 필요 없습니다.
 			.allowedOrigins("http://localhost:5173")
 			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			.allowedHeaders("*")
 			.allowCredentials(false)
 	}
 }
-
