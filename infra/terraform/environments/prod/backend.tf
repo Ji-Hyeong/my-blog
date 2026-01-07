@@ -12,6 +12,13 @@
  *   terraform init -backend-config=backend.hcl
  */
 
-# terraform {
-#   backend "s3" {}
-# }
+terraform {
+  /**
+   * Remote backend를 사용합니다.
+   *
+   * 실제 backend 값(bucket/key/region/table)은
+   * - `backend.hcl` 파일로 주입하거나
+   * - `-backend-config` 옵션으로 주입합니다.
+   */
+  backend "s3" {}
+}
