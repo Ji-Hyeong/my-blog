@@ -6,7 +6,7 @@
  *
  * 운영 팁:
  * - 이 스택은 “1회성” 성격이 강합니다.
- * - 생성 후 `environments/*/backend.tf`에서 remote backend를 활성화하는 흐름을 권장합니다.
+ * - 생성 후 `environments/prod/backend.tf`에서 remote backend를 활성화하는 흐름을 권장합니다.
  */
 
 terraform {
@@ -70,4 +70,3 @@ resource "aws_dynamodb_table" "tf_lock" {
     type = "S"
   }
 }
-
