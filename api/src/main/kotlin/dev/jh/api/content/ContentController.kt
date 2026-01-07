@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
  * - 이후: 문서 CRUD + 권한(allowlist/OAuth) + DB(Postgres/pgvector)로 확장할 수 있습니다.
  *
  * 구현 메모:
- * - classpath 리소스(`src/main/resources/data/*.json`)를 매 요청마다 읽습니다.
+ * - classpath 리소스(`src/main/resources/data/\\*.json`)를 매 요청마다 읽습니다.
  * - 장점: 개발 중 파일 변경 → 서버 재시작 시 즉시 반영(또는 devtools 사용 시 더 편함)
  * - 단점: 트래픽이 크면 비효율적이므로, 운영에서는 캐시/DB 전환을 고려합니다.
  */
@@ -57,4 +57,3 @@ class ContentController(
 		return resource.use { objectMapper.readTree(it) }
 	}
 }
-
