@@ -26,37 +26,51 @@
       </div>
     </header>
 
-    <!-- Hero introduces the purpose: fast, targeted job searching. -->
+    <!--
+      Home은 “나를 기록하고 알리는 프로필 허브”로 사용합니다.
+      - 정적인 UI 틀은 유지하되,
+      - 기본 소개/하이라이트는 profile 데이터(API → 정적 폴백)로 채웁니다.
+    -->
     <main class="container hero">
       <section class="hero-content reveal" data-delay="0.05">
-        <p class="eyebrow">Personal Log</p>
-        <h1 class="hero-title">
-          기록을 모으고,
-          <span class="accent">필요한 순간에 조합</span>하는 공간.
+        <p class="eyebrow" id="homeEyebrow">Profile</p>
+        <h1 class="hero-title" id="homeTitle">
+          강지형
+          <span class="accent">· Backend Engineer</span>
         </h1>
-        <p class="hero-body">
-          프로젝트/개선 이력을 정리해 두고, 상황에 맞게 골라서
-          결과물로 뽑아냅니다. 지금은 개인 관리용으로 가볍게 사용합니다.
+        <p class="hero-body" id="homeSummary">
+          프로젝트/개선 이력을 정리하고, 필요할 때 근거 있는 형태로 꺼내 쓰는 공간입니다.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="builder.html">맞춤 조합</a>
-          <a class="button ghost" href="resume.html">전체 이력 보기</a>
+          <a class="button primary" href="resume.html">이력서 보기</a>
+          <a class="button ghost" href="builder.html">맞춤 이력서</a>
+          <a class="button ghost" href="blog.html">글 보기</a>
         </div>
+        <div class="home-links" id="homeLinks"></div>
       </section>
 
       <!-- Visual summary cards: compact and intentional, not overly trendy. -->
       <section class="hero-cards reveal" data-delay="0.15">
         <article class="card">
-          <h3>오늘 메모</h3>
-          <p>떠오르는 경험이나 개선 포인트를 짧게 적어둡니다.</p>
+          <h3>요약</h3>
+          <p id="homeIntro">
+            단기적으로는 “이력서/프로젝트”를 잘 보여주는 데 집중하고,
+            장기적으로는 “내 기록을 관리하는 시스템”으로 확장합니다.
+          </p>
         </article>
+
         <article class="card">
-          <h3>정리 루틴</h3>
-          <p>프로젝트/개선 항목을 정리해두고 나중에 골라 씁니다.</p>
+          <h3>최근 프로젝트</h3>
+          <div class="home-list" id="homeProjects">
+            <p class="home-muted">데이터 로딩 중…</p>
+          </div>
         </article>
+
         <article class="card">
-          <h3>필요할 때 출력</h3>
-          <p>결과물이 필요해지면 PDF로만 깔끔하게 뽑습니다.</p>
+          <h3>주요 성과</h3>
+          <div class="home-list" id="homeAchievements">
+            <p class="home-muted">데이터 로딩 중…</p>
+          </div>
         </article>
       </section>
     </main>
@@ -68,5 +82,6 @@
     </footer>
 
     <script src="assets/app.js"></script>
+    <script src="assets/home.js"></script>
   </body>
 </html>
