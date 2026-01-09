@@ -46,8 +46,8 @@
         try {
           /**
            * UX 정책:
-           * - callback 화면이 “에러처럼” 보이지 않도록, 가능한 한 빠르게 원래 페이지로 복귀합니다.
-           * - 세션 교환/저장 과정에서 문제가 생기더라도, 사용자는 다시 로그인 버튼을 누를 수 있습니다.
+           * - 성공(세션이 저장됨)했을 때만 원래 페이지로 복귀합니다.
+           * - 실패 시에는 원인을 안내하고, 사용자가 “재시도”할 수 있게 합니다.
            *
            * 주의:
            * - returnTo는 로그인 시작 시 localStorage에 저장됩니다.
@@ -91,8 +91,44 @@
           const session = fromUrl?.session || fromStore?.session || null;
 
           if (!session) {
-            // 세션이 없다면 설정/차단 이슈일 가능성이 높지만, UX상 즉시 원래 화면으로 되돌립니다.
-            console.warn("No session detected on callback URL.");
+            /**
+             * 3) 아무 것도 없는 경우(대부분 설정 문제)
+             *
+             * - URL이 `.../callback.html#`처럼 도착하면 code/token이 없다는 뜻입니다.
+             * - 사용자가 바로 원인을 파악할 수 있게, 다음 액션을 제공합니다.
+             */
+            const origin = window.location.origin;
+            const supabaseCallback =
+              "https://jsdpcrphulkjslifskmk.supabase.co/auth/v1/callback";
+            status.innerHTML = `
+              <div>
+                <strong>로그인에 실패했습니다.</strong>
+                <p style="margin-top: 8px; line-height: 1.7;">
+                  인증 정보(code/token)를 받지 못해 세션을 만들 수 없습니다.
+                </p>
+                <ul style="margin-top: 10px; line-height: 1.7;">
+                  <li>Google OAuth Redirect URI에 <code>${supabaseCallback}</code>가 등록되어 있는지 확인</li>
+                  <li>Supabase URL Configuration에 <code>${origin}/auth/callback.html</code>가 허용되어 있는지 확인</li>
+                  <li>광고 차단/브라우저 정책으로 OAuth 리다이렉트가 차단되지 않았는지 확인</li>
+                </ul>
+                <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+                  <button class="auth-btn" id="retryLogin">다시 로그인</button>
+                  <a class="auth-btn" href="/index.html" style="text-decoration: none;">홈으로</a>
+                </div>
+              </div>
+            `;
+
+            const retry = document.getElementById("retryLogin");
+            if (retry) {
+              retry.addEventListener("click", async () => {
+                try {
+                  await window.JH_SUPABASE.signInWithGoogle({ returnTo });
+                } catch (e) {
+                  alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+                }
+              });
+            }
+            return;
           }
 
           localStorage.removeItem("jh_return_to");
@@ -100,12 +136,30 @@
           // localStorage flush 및 UI 렌더링을 위한 아주 짧은 지연 후 이동합니다.
           setTimeout(() => window.location.replace(returnTo), 50);
         } catch (error) {
-          // 예외가 나더라도 UX상 즉시 복귀합니다.
           console.warn("OAuth callback error:", error);
-          const returnTo = localStorage.getItem("jh_return_to") || "/index.html";
-          localStorage.removeItem("jh_return_to");
-          status.textContent = "이동 중…";
-          setTimeout(() => window.location.replace(returnTo), 50);
+          status.innerHTML = `
+            <div>
+              <strong>로그인 처리 중 오류가 발생했습니다.</strong>
+              <p style="margin-top: 8px; line-height: 1.7;">
+                잠시 후 다시 시도해 주세요.
+              </p>
+              <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="auth-btn" id="retryLogin2">다시 로그인</button>
+                <a class="auth-btn" href="/index.html" style="text-decoration: none;">홈으로</a>
+              </div>
+            </div>
+          `;
+
+          const retry = document.getElementById("retryLogin2");
+          if (retry) {
+            retry.addEventListener("click", async () => {
+              try {
+                await window.JH_SUPABASE.signInWithGoogle({ returnTo });
+              } catch (e) {
+                alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+              }
+            });
+          }
         }
       })();
     </script>
