@@ -20,3 +20,6 @@ infra/terraform/**/crash.log
 
 # OS
 .DS_Store
+
+# Local build cache
+.gradle-home/
