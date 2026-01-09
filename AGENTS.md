@@ -15,6 +15,7 @@
 - 2026-01-09: Supabase Google 로그인 + 이메일 allowlist 기반으로 맞춤/글쓰기 기능을 제한하고, posts CRUD를 정적 사이트에서 제공(supabase.js, auth.js, blog.js, post.js, supabase.md).
 - 2026-01-09: 이력/타겟 데이터도 Supabase로 확장할 수 있도록 스키마(B-라이트) 문서화 및 웹 데이터 로더(Supabase→API→정적) 추가(data-loader.js, supabase.md).
 - 2026-01-09: Supabase OAuth 콜백이 code/hash 없는 경우에도 원인 안내 및 재시도 UX 제공(callback.html).
+- 2026-01-09: Supabase OAuth 콜백 화면이 노출되지 않도록 성공/실패 모두 원래 페이지로 즉시 리다이렉트(callback.html).
 
 ## 메모
 - `reference/`, `me/`는 프론트 배포 범위에 포함하지 않음(민감/비공개 자료).
