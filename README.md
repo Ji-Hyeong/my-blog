@@ -30,6 +30,11 @@ npm install
 npm run dev
 ```
 
+- `http://localhost:8000`으로 “정적 배포(GitHub Pages)와 동일한 방식”으로 확인하고 싶다면:
+  - `apps/web` 디렉토리에서 `python3 -m http.server 8000`으로 서빙합니다.
+  - 또는 `npm run serve:8000`을 사용합니다.
+- Vite 개발 서버도 8000 포트로 고정하고 싶다면 `npm run dev:8000`을 사용합니다.
+
 - Web은 각 HTML의 `<meta name="api-base-url" content="...">` 설정을 통해 API 주소를 참조합니다.
   - 비워두면(기본값) 로컬은 `http://localhost:8080`, 배포는 `window.location.origin`을 사용합니다.
 

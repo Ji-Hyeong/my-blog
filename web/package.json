@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:8000": "vite --port 8000 --strictPort",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve:8000": "python3 -m http.server 8000"
   },
   "dependencies": {
     "react": "^19.2.0",
