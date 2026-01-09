@@ -18,10 +18,17 @@
       <div class="container nav-row">
         <div class="brand">JH · Backend</div>
         <nav class="nav-links">
-          <a class="nav-link" href="index.html">Home</a>
-          <a class="nav-link" href="resume.html">Resume</a>
-          <a class="nav-link" href="builder.html">Tailor</a>
-          <a class="nav-link" href="blog.html">Blog</a>
+          <!--
+            탭의 역할(의도):
+            - 소개: 나를 빠르게 이해시키는 “프로필 허브”
+            - 이력서: 전체 이력(회사/프로젝트/개선)을 모아 보는 페이지
+            - 맞춤: 키워드 기반으로 항목을 골라 PDF로 출력하는 도구
+            - 기록: 짧은 글/메모를 쌓는 공간(후에 소재로 재활용)
+          -->
+          <a class="nav-link" href="index.html">소개</a>
+          <a class="nav-link" href="resume.html">이력서</a>
+          <a class="nav-link" href="builder.html">맞춤</a>
+          <a class="nav-link" href="blog.html">기록</a>
         </nav>
       </div>
     </header>
@@ -33,7 +40,7 @@
     -->
     <main class="container hero">
       <section class="hero-content reveal" data-delay="0.05">
-        <p class="eyebrow" id="homeEyebrow">Profile</p>
+        <p class="eyebrow" id="homeEyebrow">About</p>
         <h1 class="hero-title" id="homeTitle">
           강지형
           <span class="accent">· Backend Engineer</span>
@@ -44,34 +51,9 @@
         <div class="hero-actions">
           <a class="button primary" href="resume.html">이력서 보기</a>
           <a class="button ghost" href="builder.html">맞춤 이력서</a>
-          <a class="button ghost" href="blog.html">글 보기</a>
+          <a class="button ghost" href="blog.html">기록 보기</a>
         </div>
         <div class="home-links" id="homeLinks"></div>
-      </section>
-
-      <!-- Visual summary cards: compact and intentional, not overly trendy. -->
-      <section class="hero-cards reveal" data-delay="0.15">
-        <article class="card">
-          <h3>요약</h3>
-          <p id="homeIntro">
-            단기적으로는 “이력서/프로젝트”를 잘 보여주는 데 집중하고,
-            장기적으로는 “내 기록을 관리하는 시스템”으로 확장합니다.
-          </p>
-        </article>
-
-        <article class="card">
-          <h3>최근 프로젝트</h3>
-          <div class="home-list" id="homeProjects">
-            <p class="home-muted">데이터 로딩 중…</p>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>주요 성과</h3>
-          <div class="home-list" id="homeAchievements">
-            <p class="home-muted">데이터 로딩 중…</p>
-          </div>
-        </article>
       </section>
     </main>
 

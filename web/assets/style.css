@@ -231,6 +231,13 @@ a {
   font-size: clamp(28px, 4vw, 44px);
 }
 
+.page-desc {
+  margin-top: 10px;
+  color: #b9b9b9;
+  max-width: 72ch;
+  line-height: 1.7;
+}
+
 .section {
   margin-top: 32px;
 }

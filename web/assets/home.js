@@ -15,13 +15,10 @@
 (() => {
   const title = document.getElementById('homeTitle');
   const summary = document.getElementById('homeSummary');
-  const intro = document.getElementById('homeIntro');
   const links = document.getElementById('homeLinks');
-  const projects = document.getElementById('homeProjects');
-  const achievements = document.getElementById('homeAchievements');
 
   // Guard: only run on home page.
-  if (!title || !summary || !projects || !achievements) {
+  if (!title || !summary) {
     return;
   }
 
@@ -54,29 +51,6 @@
     }
   };
 
-  /**
-   * 최근 프로젝트 3개를 뽑습니다.
-   *
-   * 주의:
-   * - 현재 데이터는 사람이 관리하는 JSON이며, 프로젝트가 “최신순으로 이미 정렬되어 있다”는 전제를 둡니다.
-   * - 날짜 문자열(예: `2025.11 - 2026.01`)을 엄밀히 파싱해 정렬하는 것은 과도할 수 있어,
-   *   우선은 입력 순서를 존중합니다(나중에 필요하면 파싱/정렬로 확장 가능).
-   */
-  const pickRecentProjects = (companies, count) => {
-    const items = [];
-    companies.forEach((company) => {
-      (company.projects || []).forEach((project) => {
-        items.push({
-          company: company.name,
-          name: project.name,
-          period: project.period,
-          tags: Array.isArray(project.tags) ? project.tags : [],
-        });
-      });
-    });
-    return items.slice(0, count);
-  };
-
   const renderLinks = (profile) => {
     if (!links) {
       return;
@@ -98,55 +72,6 @@
     `;
   };
 
-  const renderProjects = (profile) => {
-    const companies = Array.isArray(profile?.companies) ? profile.companies : [];
-    const items = pickRecentProjects(companies, 3);
-
-    if (!items.length) {
-      projects.innerHTML = '<p class="home-muted">아직 정리된 프로젝트가 없습니다.</p>';
-      return;
-    }
-
-    projects.innerHTML = `
-      <ul class="home-ul">
-        ${items
-          .map(
-            (item) => `
-          <li class="home-li">
-            <div class="home-li-title">${item.name}</div>
-            <div class="home-li-meta">${[item.company, item.period].filter(Boolean).join(' · ')}</div>
-            ${
-              item.tags.length
-                ? `<div class="home-li-tags">${item.tags
-                    .slice(0, 5)
-                    .map((tag) => `<span class="tag">${tag}</span>`)
-                    .join('')}</div>`
-                : ''
-            }
-          </li>
-        `
-          )
-          .join('')}
-      </ul>
-    `;
-  };
-
-  const renderAchievements = (profile) => {
-    const items = Array.isArray(profile?.achievements) ? profile.achievements : [];
-    if (!items.length) {
-      achievements.innerHTML = '<p class="home-muted">아직 정리된 성과가 없습니다.</p>';
-      return;
-    }
-    achievements.innerHTML = `
-      <ul class="home-ul">
-        ${items
-          .slice(0, 4)
-          .map((item) => `<li class="home-li">${item}</li>`)
-          .join('')}
-      </ul>
-    `;
-  };
-
   const renderProfile = (profile) => {
     const basics = profile?.basics || {};
     const name = basics.name || '이름';
@@ -154,22 +79,11 @@
 
     title.innerHTML = `${name} <span class="accent">· ${jobTitle}</span>`;
     summary.textContent = profile?.summary || '프로필 요약을 준비 중입니다.';
-    if (intro) {
-      // home에서는 너무 길면 읽히지 않으므로 1~2문장만 보여줍니다.
-      const introText = (profile?.intro || '').split('\n').map((line) => line.trim()).filter(Boolean);
-      intro.textContent =
-        introText.slice(0, 2).join(' ') ||
-        '프로젝트/개선 이력을 정리하고, 필요할 때 근거 있는 형태로 꺼내 쓰는 공간입니다.';
-    }
 
     renderLinks(profile);
-    renderProjects(profile);
-    renderAchievements(profile);
   };
 
   const renderError = () => {
-    projects.innerHTML = '<p class="home-muted">프로필 데이터를 불러오지 못했습니다.</p>';
-    achievements.innerHTML = '<p class="home-muted">-</p>';
     if (links) {
       links.innerHTML = '';
     }
@@ -177,4 +91,3 @@
 
   loadProfile().then(renderProfile).catch(renderError);
 })();
-

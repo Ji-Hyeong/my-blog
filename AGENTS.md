@@ -11,6 +11,7 @@
 - 2026-01-09: Pages에서 API 미연동 시 정적 JSON(`/data/*.json`)로 폴백 및 로컬에서 JSON 변경 즉시 반영되도록 API의 JSON 로딩 방식을 개선(pages.yml, app.js, resume.js, blog.js, builder.js, ContentController.kt).
 - 2026-01-09: 홈 페이지를 “프로필 허브”로 재구성하고 profile 데이터 기반으로 동적 렌더링(home.js, index.html, style.css).
 - 2026-01-09: 로컬에서 GitHub Pages와 동일한 경로로 확인할 수 있도록 Web 8000 포트 실행 스크립트 추가(package.json, README.md).
+- 2026-01-09: 홈을 단순 소개 페이지로 정리하고, 탭 라벨/설명 문구를 역할 중심으로 통일(index.html, home.js, resume.html, builder.html, blog.html, style.css).
 
 ## 메모
 - `reference/`, `me/`는 프론트 배포 범위에 포함하지 않음(민감/비공개 자료).
