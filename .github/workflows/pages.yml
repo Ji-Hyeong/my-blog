@@ -17,6 +17,9 @@ on:
     branches: [main]
     paths:
       - "web/**"
+      # 이력서/블로그 데이터(JSON)가 변경되면 정적 페이지 산출물도 함께 갱신되어야 하므로
+      # API의 classpath data 변경도 Pages 배포 트리거에 포함합니다.
+      - "api/src/main/resources/data/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -43,6 +46,17 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Export API data to static assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # GitHub Pages는 `web/` 디렉토리만 정적 호스팅합니다.
+          # 따라서 API가 참조하는 classpath JSON을 `web/public/data/`로 복사해
+          # “데이터 변경 → 정적 배포 반영”이 가능하도록 합니다.
+          mkdir -p web/public/data
+          cp -v api/src/main/resources/data/*.json web/public/data/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -52,4 +66,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

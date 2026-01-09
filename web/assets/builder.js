@@ -22,6 +22,7 @@
   const printProjects = document.getElementById("printProjects")
   const printInitiatives = document.getElementById("printInitiatives")
   const printEducation = document.getElementById("printEducation")
+  const printTrainings = document.getElementById("printTrainings")
   const printFooter = document.getElementById("printFooter")
   const autoSelectButton = document.getElementById("autoSelect")
   const resetSelectButton = document.getElementById("resetSelect")
@@ -307,6 +308,31 @@
       `
       )
       .join("")
+
+    /**
+     * 교육/대외활동(선택) 렌더링.
+     *
+     * - 이 섹션은 PDF 출력 기준으로도 정보 가치가 있지만,
+     *   모든 사용자가 채우는 것은 아니므로 데이터가 없으면 숨깁니다.
+     * - 데이터는 profile.json의 `trainings` 배열을 사용합니다.
+     */
+    if (printTrainings) {
+      const trainings = Array.isArray(state.profile.trainings)
+        ? state.profile.trainings
+        : []
+      printTrainings.innerHTML = trainings.length
+        ? trainings
+            .map(
+              (item) => `
+            <div class="print-row">
+              <strong>${item.name}</strong>
+              <span>${item.period}</span>
+            </div>
+          `
+            )
+            .join("")
+        : '<p class="print-muted">-</p>'
+    }
 
     // Deliberately omit keyword tags in the header for a cleaner resume.
   }

@@ -84,6 +84,13 @@
 
   const renderResume = (data) => {
     const companies = Array.isArray(data.companies) ? data.companies : [];
+    /**
+     * 교육/대외활동(선택) 목록입니다.
+     *
+     * - 과거 이력서에 있는 교육 이력을 참고해 `profile.json`에 `trainings` 배열로 저장합니다.
+     * - 데이터가 없을 수 있으므로, 렌더링은 조건부로 처리합니다.
+     */
+    const trainings = Array.isArray(data.trainings) ? data.trainings : [];
     resumeRoot.innerHTML = `
         <section class="section">
           <h2>${data.basics.name}</h2>
@@ -138,6 +145,21 @@
             .map((item) => `<p>${item.school} · ${item.major} (${item.period})</p>`)
             .join('')}
         </section>
+
+        ${
+          trainings.length
+            ? `
+        <section class="section">
+          <h2>교육/대외활동</h2>
+          <ul>
+            ${trainings
+              .map((item) => `<li>${item.name} (${item.period})</li>`)
+              .join('')}
+          </ul>
+        </section>
+        `
+            : ''
+        }
       `;
   };
 
