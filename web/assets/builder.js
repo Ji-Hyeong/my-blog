@@ -479,34 +479,16 @@
 
   const loadData = () => {
     /**
-     * 데이터는 백엔드 API에서 가져옵니다.
+     * 데이터 로딩 전략(공통 로더 사용):
      *
-     * - profile: `/api/profile`
-     * - targets: `/api/targets`
+     * - assets/data-loader.js에 “Supabase(writer only) → API → 정적 JSON” 우선순위 로더를 구현해두었습니다.
+     * - 맞춤(builder)은 작성자 전용 기능이므로, targets는 Supabase에서도 writer만 읽을 수 있게 설계되어 있습니다.
      *
-     * 배포 환경에서는 HTTPS로 제공되는 API를 호출하게 되며,
-     * 로컬 개발에서는 기본적으로 `http://localhost:8080`을 사용합니다.
-     *
-     * (API 기본 URL 규칙은 assets/app.js의 `getApiBaseUrl()`에 정의되어 있습니다.)
+     * 반환 형태:
+     * - profile: profile.json과 동일한 형태
+     * - targets: `{ targets: [...] }`
      */
-    const apiBaseUrl =
-      window.JH_BLOG?.getApiBaseUrl?.() || "http://localhost:8080"
-
-    /**
-     * 데이터 로딩 전략:
-     * 1) API(`/api/profile`, `/api/targets`) 호출을 먼저 시도합니다.
-     * 2) 실패하면 GitHub Pages 정적 배포 경로(`/data/*.json`)로 폴백합니다.
-     *
-     * 이 폴백이 필요한 이유:
-     * - GitHub Pages는 정적 호스팅이므로 `/api/*`가 없습니다.
-     * - Pages 배포 단계에서 `apps/api`의 JSON을 `web/data/`로 복사해 함께 배포합니다.
-     */
-    return Promise.all([
-      fetchJsonOrThrow(`${apiBaseUrl}/api/profile`),
-      fetchJsonOrThrow(`${apiBaseUrl}/api/targets`),
-    ]).catch(() =>
-      Promise.all([fetchJsonOrThrow("/data/profile.json"), fetchJsonOrThrow("/data/targets.json")])
-    )
+    return Promise.all([window.JH_DATA.loadProfile(), window.JH_DATA.loadTargets()])
   }
 
   loadData()

@@ -23,32 +23,19 @@
   }
 
   /**
-   * JSON을 안전하게 fetch합니다.
-   *
-   * - `fetch()`는 404/500이어도 예외를 던지지 않으므로 상태 코드를 확인합니다.
-   * - 실패 시 호출부에서 폴백 전략을 적용할 수 있도록 예외를 던집니다.
-   */
-  const fetchJsonOrThrow = async (url) => {
-    const response = await fetch(url, { cache: 'no-cache' });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} from ${url}`);
-    }
-    return response.json();
-  };
-
-  /**
    * profile 데이터를 가져옵니다.
    *
    * - 배포 환경에서 API가 없을 수 있으므로, 정적 폴백을 제공합니다.
    * - API 기본 URL은 `assets/app.js`의 `getApiBaseUrl()` 규칙을 사용합니다.
    */
   const loadProfile = async () => {
-    const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || 'http://localhost:8080';
-    try {
-      return await fetchJsonOrThrow(`${apiBaseUrl}/api/profile`);
-    } catch (error) {
-      return fetchJsonOrThrow('/data/profile.json');
-    }
+    /**
+     * assets/data-loader.js의 공통 로더를 사용합니다.
+     *
+     * - Supabase로 전환하더라도 Home 로직은 유지하고,
+     * - “어떤 소스에서 가져오는지”는 로더가 결정합니다.
+     */
+    return window.JH_DATA.loadProfile();
   };
 
   const renderLinks = (profile) => {

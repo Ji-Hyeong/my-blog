@@ -125,3 +125,201 @@ python3 -m http.server 8000
 
 그 다음 `http://localhost:8000`에서 확인합니다.
 
+---
+
+# 이력/타겟 데이터 스키마 (정규화: B-라이트)
+
+목표:
+- 기존에 `apps/api/src/main/resources/data/*.json`으로 관리하던 데이터를 Supabase DB로 옮깁니다.
+- 정적 웹(GitHub Pages)은 그대로 유지하면서, 데이터만 Supabase에서 동적으로 읽습니다.
+- 공개 방문자는 “읽기만”, allowlist 계정만 “쓰기/수정”이 가능하도록 RLS로 강제합니다.
+
+> 마이그레이션은 추후 진행할 수 있도록, 웹은 “Supabase 우선 → 없으면 기존 `/data/*.json` 폴백” 구조로 구현했습니다.
+
+## 6) DB 테이블: `site_profile` (단일 row)
+
+- 프로필/소개/스킬/학력 등 “페이지 상단에 그대로 쓰이는 정보”는 단일 row로 관리합니다.
+- 정규화를 과하게 하면 초기 속도가 느려지므로, 배열성 데이터는 `jsonb`로 보관합니다.
+
+```sql
+create table if not exists public.site_profile (
+  key text primary key,
+  name text not null,
+  title text not null,
+  email text,
+  phone text,
+  location text,
+  links jsonb not null default '[]'::jsonb,
+  summary text,
+  intro text,
+  achievements text[] not null default '{}'::text[],
+  skills jsonb not null default '[]'::jsonb,
+  education jsonb not null default '[]'::jsonb,
+  trainings jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists site_profile_set_updated_at on public.site_profile;
+create trigger site_profile_set_updated_at
+before update on public.site_profile
+for each row execute function public.set_updated_at();
+```
+
+## 7) DB 테이블: `companies`, `projects`, `initiatives`
+
+```sql
+create table if not exists public.companies (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text,
+  period text,
+  summary text,
+  icon_image text,
+  icon_text text,
+  sort_order int not null default 0
+);
+
+create table if not exists public.projects (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id) on delete cascade,
+  name text not null,
+  period text,
+  role text,
+  summary text,
+  impact text,
+  tags text[] not null default '{}'::text[],
+  details text[] not null default '{}'::text[],
+  tech text[] not null default '{}'::text[],
+  sort_order int not null default 0
+);
+
+create table if not exists public.initiatives (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id) on delete cascade,
+  name text not null,
+  period text,
+  summary text,
+  impact text,
+  tags text[] not null default '{}'::text[],
+  details text[] not null default '{}'::text[],
+  tech text[] not null default '{}'::text[],
+  sort_order int not null default 0
+);
+```
+
+## 8) DB 테이블: `targets` (작성자 전용)
+
+```sql
+create table if not exists public.targets (
+  id uuid primary key default gen_random_uuid(),
+  company text not null,
+  role text not null,
+  priority_tags text[] not null default '{}'::text[],
+  summary_hint text,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+```
+
+## 9) RLS 정책(공개 읽기 + 작성자 쓰기)
+
+allowlist 이메일: `wlgud30@gmail.com`
+
+> 주의: 이 정책은 “최종 방어선”입니다. 프론트의 버튼 숨김/가드는 UX일 뿐입니다.
+
+```sql
+-- 공통: writer 판별 조건
+-- (정책 안에서 반복 사용)
+-- (auth.jwt()는 인증된 사용자만 값이 있고, 공개 방문자는 null입니다.)
+
+-- site_profile
+alter table public.site_profile enable row level security;
+
+drop policy if exists site_profile_public_read on public.site_profile;
+create policy site_profile_public_read
+on public.site_profile
+for select
+using (true);
+
+drop policy if exists site_profile_writer_write on public.site_profile;
+create policy site_profile_writer_write
+on public.site_profile
+for all
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+
+-- companies
+alter table public.companies enable row level security;
+
+drop policy if exists companies_public_read on public.companies;
+create policy companies_public_read
+on public.companies
+for select
+using (true);
+
+drop policy if exists companies_writer_write on public.companies;
+create policy companies_writer_write
+on public.companies
+for all
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+
+-- projects
+alter table public.projects enable row level security;
+
+drop policy if exists projects_public_read on public.projects;
+create policy projects_public_read
+on public.projects
+for select
+using (true);
+
+drop policy if exists projects_writer_write on public.projects;
+create policy projects_writer_write
+on public.projects
+for all
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+
+-- initiatives
+alter table public.initiatives enable row level security;
+
+drop policy if exists initiatives_public_read on public.initiatives;
+create policy initiatives_public_read
+on public.initiatives
+for select
+using (true);
+
+drop policy if exists initiatives_writer_write on public.initiatives;
+create policy initiatives_writer_write
+on public.initiatives
+for all
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+
+-- targets: 작성자만 읽고/쓰기
+alter table public.targets enable row level security;
+
+drop policy if exists targets_writer_read on public.targets;
+create policy targets_writer_read
+on public.targets
+for select
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+
+drop policy if exists targets_writer_write on public.targets;
+create policy targets_writer_write
+on public.targets
+for all
+using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
+```
+

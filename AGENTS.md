@@ -13,6 +13,7 @@
 - 2026-01-09: 로컬에서 GitHub Pages와 동일한 경로로 확인할 수 있도록 Web 8000 포트 실행 스크립트 추가(package.json, README.md).
 - 2026-01-09: 홈을 단순 소개 페이지로 정리하고, 탭 라벨/설명 문구를 역할 중심으로 통일(index.html, home.js, resume.html, builder.html, blog.html, style.css).
 - 2026-01-09: Supabase Google 로그인 + 이메일 allowlist 기반으로 맞춤/글쓰기 기능을 제한하고, posts CRUD를 정적 사이트에서 제공(supabase.js, auth.js, blog.js, post.js, supabase.md).
+- 2026-01-09: 이력/타겟 데이터도 Supabase로 확장할 수 있도록 스키마(B-라이트) 문서화 및 웹 데이터 로더(Supabase→API→정적) 추가(data-loader.js, supabase.md).
 
 ## 메모
 - `reference/`, `me/`는 프론트 배포 범위에 포함하지 않음(민감/비공개 자료).
