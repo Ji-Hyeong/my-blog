@@ -30,6 +30,13 @@ body {
     radial-gradient(circle at 85% 0%, #f1f6f2 0%, transparent 42%),
     linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
   font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 h1,
@@ -84,9 +91,41 @@ a {
 .nav-links {
   display: flex;
   gap: 18px;
-  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   font-size: 13px;
   letter-spacing: 0.05em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffaf2;
+  color: var(--ink);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.header-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .auth-area {
@@ -344,7 +383,9 @@ a {
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #151515;
+  border: 1px solid rgba(199, 122, 63, 0.2);
+  background: rgba(199, 122, 63, 0.12);
+  color: var(--ink);
   font-size: 12px;
   margin-right: 8px;
 }
@@ -439,6 +480,34 @@ a {
   gap: 4px;
 }
 
+.resume-company-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.company-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.company-logo-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink);
+  background: #fff3e6;
+}
+
 /* Builder layout for left/center/right panels. */
 .builder-grid {
   display: grid;
@@ -503,13 +572,15 @@ a {
   align-items: center;
   padding: 3px 8px;
   border-radius: 12px;
-  background: #151515;
+  border: 1px solid rgba(47, 107, 95, 0.2);
+  background: rgba(47, 107, 95, 0.12);
+  color: var(--ink);
   font-size: 11px;
   margin-right: 6px;
 }
 
 .preview {
-  background: #0b0b0b;
+  background: #fffaf4;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 22px;
@@ -696,6 +767,7 @@ a {
   padding: 18px 0 32px;
   font-size: 12px;
   color: var(--ink-muted);
+  margin-top: auto;
 }
 
 /* Motion: gentle rise with staggered delays. */

@@ -9,7 +9,9 @@
       - 비워두면(기본값) 로컬은 http://localhost:8080, 배포는 현재 오리진을 사용합니다.
     -->
     <meta name="api-base-url" content="" />
+    <meta name="github-url" content="https://github.com/Ji-Hyeong" />
     <title>Backend Engineer · Resume & Blog</title>
+    <link rel="icon" href="favicon.svg" />
     <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
@@ -31,13 +33,7 @@
         <p class="hero-body" id="homeSummary">
           대규모 트래픽 환경에서 안정성을 지키고, 수치 기반 개선을 반복해 온 백엔드 엔지니어입니다.
         </p>
-        <!-- 맞춤/기록은 로그인 이후에만 노출됩니다. -->
-        <div class="hero-actions">
-          <a class="button primary" href="resume.html">이력서 보기</a>
-          <a class="button ghost" href="builder.html" data-requires-auth="true">맞춤 이력서</a>
-          <a class="button ghost" href="blog.html" data-requires-auth="true">기록 보기</a>
-        </div>
-        <div class="home-links" id="homeLinks"></div>
+        <!-- 홈에서는 핵심 메시지에 집중하도록 CTA/링크를 최소화합니다. -->
       </section>
 
       <!-- Summary panel keeps the home layout structured and scannable. -->
@@ -60,9 +56,7 @@
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-row">
-        <span>© 2026 JH Log · 개인 기록용</span>
-      </div>
+      <div class="container footer-row"></div>
     </footer>
 
     <script src="assets/header.js"></script>

@@ -1,6 +1,9 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: 홈 CTA/링크를 제거하고 헤더에 GitHub 아이콘 링크를 추가(header.js, style.css, index.html).
+- 2026-01-09: 회사 아이콘 렌더링을 이력서에 반영하고 파비콘을 추가(resume.js, style.css, favicon.svg, html head).
+- 2026-01-09: 맞춤/기록 페이지 문구와 타이틀을 대외 톤에 맞게 정리(builder.html, blog.html).
 - 2026-01-09: 이력서 기술 스택 UI를 태그형으로 개선하고 경력/프로젝트를 최신순 정렬(resume.js, style.css).
 - 2026-01-09: 소개/이력서 톤을 대외 관점으로 정리하고 라이트 팔레트로 전환(app.js, style.css, index.html, resume.html, resume.js).
 - 2026-01-09: 홈/이력서 UI 개선 및 로그인 상태에 따른 탭/CTA 숨김 적용(header.js, home.js, resume.js, style.css, index.html, resume.html).

@@ -6,6 +6,7 @@
     <!-- index.html과 동일한 API 기본 주소 규칙을 사용합니다. -->
     <meta name="api-base-url" content="" />
     <title>Resume · Backend Engineer</title>
+    <link rel="icon" href="favicon.svg" />
     <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
@@ -13,15 +14,6 @@
     <div id="siteHeader" data-show-auth="true"></div>
 
     <main class="container page">
-      <section class="reveal" data-delay="0.05">
-        <p class="eyebrow">Resume</p>
-        <h1 class="page-title">기본 이력서</h1>
-        <p class="page-desc">
-          경력 흐름과 임팩트를 빠르게 확인할 수 있도록 구성했습니다. 회사별 프로젝트와 개선 성과를
-          먼저 훑고, 필요하면 맞춤 탭에서 포지션별로 정리합니다.
-        </p>
-      </section>
-
       <!-- Resume content will be injected by resume.js from API (/api/profile). -->
       <section id="resume" class="section reveal" data-delay="0.1"></section>
     </main>

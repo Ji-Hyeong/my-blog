@@ -15,7 +15,6 @@
 (() => {
   const title = document.getElementById('homeTitle');
   const summary = document.getElementById('homeSummary');
-  const links = document.getElementById('homeLinks');
   const highlights = document.getElementById('homeHighlights');
   const focus = document.getElementById('homeFocus');
   const stack = document.getElementById('homeStack');
@@ -39,27 +38,6 @@
      * - “어떤 소스에서 가져오는지”는 로더가 결정합니다.
      */
     return window.JH_DATA.loadProfile();
-  };
-
-  const renderLinks = (profile) => {
-    if (!links) {
-      return;
-    }
-    const items = Array.isArray(profile?.basics?.links) ? profile.basics.links : [];
-    if (!items.length) {
-      links.innerHTML = '';
-      return;
-    }
-    links.innerHTML = `
-      <div class="home-link-row">
-        ${items
-          .map(
-            (item) =>
-              `<a class="home-link" href="${item.url}" target="_blank" rel="noreferrer">${item.label}</a>`
-          )
-          .join('')}
-      </div>
-    `;
   };
 
   /**
@@ -126,7 +104,6 @@
         : rawSummary;
     summary.textContent = briefSummary || '프로필 요약을 준비 중입니다.';
 
-    renderLinks(profile);
     renderHighlights(profile);
     renderFocus(profile);
   };

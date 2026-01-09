@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <rect width="96" height="96" rx="20" fill="#c77a3f" />
+  <rect x="6" y="6" width="84" height="84" rx="16" fill="#fdf7ee" />
+  <text
+    x="48"
+    y="58"
+    text-anchor="middle"
+    font-family="Playfair Display, Iropke Batang, serif"
+    font-size="36"
+    fill="#1d1b16"
+  >
+    JH
+  </text>
+</svg>

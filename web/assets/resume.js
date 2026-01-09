@@ -67,6 +67,22 @@
   `;
 
   // Template helpers keep HTML generation consistent and easy to adjust.
+  /**
+   * 회사 아이콘을 렌더링합니다.
+   *
+   * - iconImage가 있으면 이미지 우선, 없으면 iconText를 사용합니다.
+   * - 아이콘이 없는 경우 빈 문자열을 반환합니다.
+   */
+  const renderCompanyIcon = (company) => {
+    if (company.iconImage) {
+      return `<img class="company-logo" src="${company.iconImage}" alt="${company.name} logo" />`;
+    }
+    if (company.iconText) {
+      return `<span class="company-logo-text">${company.iconText}</span>`;
+    }
+    return '';
+  };
+
   const renderCompanyProjects = (items, title) => {
     if (!items.length) {
       return '';
@@ -91,7 +107,7 @@
             }
             <div>${renderTagRow(item.tags || [])}</div>
             ${
-              item.tech
+              Array.isArray(item.tech) && item.tech.length
                 ? `<div class="company-item-tech">기술: ${item.tech.join(' · ')}</div>`
                 : ''
             }
@@ -109,7 +125,10 @@
     return `
     <article class="card resume-card">
       <div class="resume-company-head">
-        <h3>${company.name}</h3>
+        <div class="resume-company-title">
+          ${renderCompanyIcon(company)}
+          <h3>${company.name}</h3>
+        </div>
         <p class="resume-muted">${company.role} · ${company.period}</p>
       </div>
       ${company.summary ? `<p>${company.summary}</p>` : ''}
