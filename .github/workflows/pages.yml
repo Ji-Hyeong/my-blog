@@ -1,0 +1,55 @@
+#
+# GitHub Pages 배포 워크플로우
+#
+# 목적:
+# - `apps` 레포의 `web/` 디렉토리를 GitHub Pages로 정적 배포합니다.
+# - 커스텀 도메인 `blog.jihyeong.com`은 `web/CNAME` 파일로 고정합니다.
+#
+# 주의:
+# - 이 워크플로우는 빌드(Vite build)를 하지 않습니다.
+#   현재 `web/`은 레거시 정적 HTML/CSS/JS를 그대로 서빙하는 구조이기 때문입니다.
+#
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 레포 루트(apps) 기준으로 web/ 전체를 정적 사이트로 배포합니다.
+          path: web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
