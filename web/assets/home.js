@@ -112,9 +112,19 @@
     const basics = profile?.basics || {};
     const name = basics.name || '이름';
     const jobTitle = basics.title || 'Backend Engineer';
+    // 이름과 직함을 두 줄로 분리해 외부 시선에서 읽기 쉽게 구성합니다.
+    title.innerHTML = `${name}<span class="hero-subtitle accent">${jobTitle}</span>`;
 
-    title.innerHTML = `${name} <span class="accent">· ${jobTitle}</span>`;
-    summary.textContent = profile?.summary || '프로필 요약을 준비 중입니다.';
+    /**
+     * 긴 자기소개 문단 대신, 한 줄 요약으로 외부 독자가 핵심을 빠르게 이해하도록 합니다.
+     * - summary가 지나치게 길면 기본 문장으로 대체합니다.
+     */
+    const rawSummary = profile?.summary || '';
+    const briefSummary =
+      rawSummary.length > 140
+        ? '안정적인 서비스 운영과 빠른 실험을 동시에 추구하는 백엔드 엔지니어입니다.'
+        : rawSummary;
+    summary.textContent = briefSummary || '프로필 요약을 준비 중입니다.';
 
     renderLinks(profile);
     renderHighlights(profile);

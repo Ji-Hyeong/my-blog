@@ -53,12 +53,12 @@
     }
   });
 
-  // Highlight the current page in the navigation bar.
+  // Highlight the current page in the navigation bar with the new accent theme.
   const path = window.location.pathname.split('/').pop();
   document.querySelectorAll('.nav-link').forEach((link) => {
     if (link.getAttribute('href') === path) {
       link.style.background = 'var(--accent)';
-      link.style.color = '#0f1115';
+      link.style.color = '#ffffff';
     }
   });
 })();

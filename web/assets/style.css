@@ -1,18 +1,21 @@
 /*
-  Visual system: warm paper background, dark ink text, muted accent.
-  The palette avoids trendy neon/purple while staying crisp and readable.
+  Visual system: bright paper base with warm accents.
+  - Readability-first for external viewers (recruiters/peers).
+  - No purple bias; accents lean toward clay + evergreen.
 */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap");
+
 :root {
-  --paper: #050505;
-  --paper-2: #0a0a0a;
-  --ink: #f5f3ee;
-  --ink-muted: #a7a39c;
-  --accent: #d1a77a;
-  --accent-2: #7aa389;
-  --border: #1b1b1b;
-  --card: #0f0f0f;
-  --shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
-  --radius: 16px;
+  --paper: #f8f2e8;
+  --paper-2: #fffdf8;
+  --ink: #1d1b16;
+  --ink-muted: #5e5a52;
+  --accent: #c77a3f;
+  --accent-2: #2f6b5f;
+  --border: #e6ddcf;
+  --card: #ffffff;
+  --shadow: 0 18px 36px rgba(30, 24, 16, 0.14);
+  --radius: 18px;
 }
 
 /* Base layout and typography rules. */
@@ -23,17 +26,18 @@
 body {
   margin: 0;
   color: var(--ink);
-  background: radial-gradient(circle at 15% 10%, #0e0e0e 0%, transparent 45%),
-    radial-gradient(circle at 85% 0%, #111 0%, transparent 45%),
+  background: radial-gradient(circle at 15% 15%, #fff2df 0%, transparent 45%),
+    radial-gradient(circle at 85% 0%, #f1f6f2 0%, transparent 42%),
     linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
-  font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: "Iropke Batang", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: "Playfair Display", "Iropke Batang", "Apple SD Gothic Neo", "Noto Sans KR",
+    serif;
   margin: 0 0 12px;
   letter-spacing: -0.01em;
 }
@@ -59,8 +63,8 @@ a {
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  background: rgba(5, 5, 5, 0.92);
-  backdrop-filter: blur(6px);
+  background: rgba(255, 251, 246, 0.92);
+  backdrop-filter: blur(8px);
   z-index: 10;
 }
 
@@ -74,7 +78,7 @@ a {
 .brand {
   font-weight: 700;
   font-size: 18px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 .nav-links {
@@ -100,26 +104,26 @@ a {
 
 .auth-status {
   font-size: 12px;
-  color: #b9b9b9;
+  color: var(--ink-muted);
 }
 
 .auth-btn {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: #fffaf2;
   color: var(--ink);
   cursor: pointer;
 }
 
 .auth-btn:hover {
   background: var(--accent-2);
-  color: #050505;
+  color: #ffffff;
 }
 
 .auth-hint {
   font-size: 11px;
-  color: #b9b9b9;
+  color: var(--ink-muted);
 }
 
 .nav-link {
@@ -130,7 +134,7 @@ a {
 
 .nav-link:hover {
   background: var(--accent-2);
-  color: #050505;
+  color: #ffffff;
 }
 
 /* Hero layout with a subtle split grid. */
@@ -146,12 +150,19 @@ a {
   line-height: 1.1;
 }
 
+.hero-subtitle {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(18px, 3vw, 26px);
+  letter-spacing: 0.02em;
+}
+
 .accent {
   color: var(--accent);
 }
 
 .eyebrow {
-  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 11px;
@@ -211,14 +222,14 @@ a {
 .button {
   padding: 12px 20px;
   border-radius: 999px;
-  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   border: 1px solid var(--ink);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .button.primary {
   background: var(--ink);
-  color: #050505;
+  color: #fff7ed;
   border-color: transparent;
 }
 
@@ -253,7 +264,7 @@ a {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: #fffaf2;
   color: var(--ink);
   text-decoration: none;
   font-size: 13px;
@@ -261,7 +272,7 @@ a {
 
 .home-link:hover {
   background: var(--accent-2);
-  color: #050505;
+  color: #ffffff;
 }
 
 .home-list {
@@ -300,7 +311,7 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 }
 
 /* Shared layout for content pages. */
@@ -339,6 +350,10 @@ a {
 }
 
 /* Resume layout enhancements for readability. */
+.resume-card {
+  border: 1px solid rgba(199, 122, 63, 0.12);
+}
+
 .resume-hero-card {
   display: grid;
   gap: 14px;
@@ -354,6 +369,12 @@ a {
 .resume-title {
   color: var(--ink-muted);
   margin: 0;
+}
+
+.resume-summary {
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.8;
 }
 
 .resume-contact {
@@ -375,6 +396,7 @@ a {
 .resume-grid {
   display: grid;
   gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .resume-list {
@@ -387,6 +409,23 @@ a {
 .resume-stack {
   display: grid;
   gap: 6px;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(47, 107, 95, 0.2);
+  background: rgba(47, 107, 95, 0.08);
+  font-size: 12px;
+  color: var(--ink);
 }
 
 .resume-muted {

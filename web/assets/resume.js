@@ -14,6 +14,58 @@
   const renderTagRow = (tags) =>
     tags.map((tag) => `<span class="tag">${tag}</span>`).join('');
 
+  /**
+   * 기간 문자열을 정렬 가능한 숫자로 변환합니다.
+   *
+   * - "2025.11 - 2026.01", "2022.08 - Present", "2024.01" 형태를 지원합니다.
+   * - 종료가 "Present/현재/Now"면 가장 최신으로 취급합니다.
+   */
+  const getPeriodEndValue = (period) => {
+    if (!period || typeof period !== 'string') {
+      return 0;
+    }
+    const normalized = period.trim().toLowerCase();
+    if (normalized.includes('present') || normalized.includes('현재') || normalized.includes('now')) {
+      return 999912;
+    }
+
+    const parts = normalized.split('-').map((part) => part.trim());
+    const target = parts.length > 1 ? parts[1] : parts[0];
+    const match = target.match(/(\d{4})\.(\d{2})/);
+    if (!match) {
+      return 0;
+    }
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    return year * 100 + month;
+  };
+
+  /**
+   * 최신 기간이 먼저 오도록 정렬합니다.
+   *
+   * - 동일한 경우 이름으로 보조 정렬합니다.
+   */
+  const sortByLatest = (items) =>
+    [...items].sort((a, b) => {
+      const aValue = getPeriodEndValue(a.period);
+      const bValue = getPeriodEndValue(b.period);
+      if (aValue !== bValue) {
+        return bValue - aValue;
+      }
+      return String(a.name || '').localeCompare(String(b.name || ''), 'ko');
+    });
+
+  /**
+   * 기술 스택을 태그 형태로 렌더링합니다.
+   *
+   * - 긴 한 줄을 방지하고, 시각적 스캔성을 높입니다.
+   */
+  const renderSkillTags = (items) => `
+    <div class="skill-tags">
+      ${items.map((item) => `<span class="skill-tag">${item}</span>`).join('')}
+    </div>
+  `;
+
   // Template helpers keep HTML generation consistent and easy to adjust.
   const renderCompanyProjects = (items, title) => {
     if (!items.length) {
@@ -31,7 +83,7 @@
               item.role ? ` · ${item.role}` : ''
             }</div>
             <div>${item.summary}</div>
-            <div><strong>Impact:</strong> ${item.impact}</div>
+            <div><strong>성과:</strong> ${item.impact}</div>
             ${
               item.details && item.details.length
                 ? `<ul>${item.details.map((detail) => `<li>${detail}</li>`).join('')}</ul>`
@@ -40,7 +92,7 @@
             <div>${renderTagRow(item.tags || [])}</div>
             ${
               item.tech
-                ? `<div class="company-item-tech">Tech: ${item.tech.join(' · ')}</div>`
+                ? `<div class="company-item-tech">기술: ${item.tech.join(' · ')}</div>`
                 : ''
             }
           </div>
@@ -51,22 +103,26 @@
     `;
   };
 
-  const renderCompany = (company) => `
+  const renderCompany = (company) => {
+    const projects = sortByLatest(company.projects || []);
+    const initiatives = sortByLatest(company.initiatives || []);
+    return `
     <article class="card resume-card">
       <div class="resume-company-head">
         <h3>${company.name}</h3>
         <p class="resume-muted">${company.role} · ${company.period}</p>
       </div>
       ${company.summary ? `<p>${company.summary}</p>` : ''}
-      ${renderCompanyProjects(company.projects || [], '프로젝트')}
-      ${renderCompanyProjects(company.initiatives || [], '개선/표준화')}
+      ${renderCompanyProjects(projects, '프로젝트')}
+      ${renderCompanyProjects(initiatives, '개선/표준화')}
     </article>
   `;
+  };
 
   const renderSkill = (group) => `
     <div class="card resume-card">
       <h3>${group.category}</h3>
-      <p>${group.items.join(' · ')}</p>
+      ${renderSkillTags(group.items || [])}
     </div>
   `;
 
@@ -93,7 +149,7 @@
 
   const renderResume = (data) => {
     const basics = data.basics || {};
-    const companies = Array.isArray(data.companies) ? data.companies : [];
+    const companies = Array.isArray(data.companies) ? sortByLatest(data.companies) : [];
     const achievements = Array.isArray(data.achievements) ? data.achievements : [];
     const skills = Array.isArray(data.skills) ? data.skills : [];
     const education = Array.isArray(data.education) ? data.education : [];

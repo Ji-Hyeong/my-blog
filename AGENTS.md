@@ -1,6 +1,8 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: 이력서 기술 스택 UI를 태그형으로 개선하고 경력/프로젝트를 최신순 정렬(resume.js, style.css).
+- 2026-01-09: 소개/이력서 톤을 대외 관점으로 정리하고 라이트 팔레트로 전환(app.js, style.css, index.html, resume.html, resume.js).
 - 2026-01-09: 홈/이력서 UI 개선 및 로그인 상태에 따른 탭/CTA 숨김 적용(header.js, home.js, resume.js, style.css, index.html, resume.html).
 - 2026-01-09: 헤더/탭 내비게이션을 공통 스크립트로 분리해 언어/구조를 단일화(header.js).
 - 2026-01-09: API/Infra 중단에 맞춰 불필요한 GitHub Actions 워크플로우 제거(api-deploy.yml, terraform-apply.yml, terraform-plan.yml).
