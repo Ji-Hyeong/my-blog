@@ -12,27 +12,35 @@
 */
 (() => {
   /**
-   * 기본 설정값.
+   * 설정 로딩 순서:
+   * 1) window.JH_SUPABASE_CONFIG (단일 설정 파일)
+   * 2) HTML meta (페이지별 오버라이드)
    *
-   * - 필요하면 HTML에서 meta tag로 override 할 수 있습니다.
-   *   예: <meta name="supabase-url" content="...">
+   * - 배포/로컬 환경마다 값이 다를 수 있으므로, 코드에 하드코딩하지 않습니다.
+   * - 예: <meta name="supabase-url" content="...">
    *       <meta name="supabase-anon-key" content="...">
    *       <meta name="writer-email" content="...">
    */
-  const DEFAULT_SUPABASE_URL = "https://jsdpcrphulkjslifskmk.supabase.co"
-  const DEFAULT_SUPABASE_ANON_KEY =
-    "sb_publishable_-qVYmvWIx-uZRQF0SsUxgw_llyMm96l"
-  const DEFAULT_WRITER_EMAIL = "wlgud30@gmail.com"
-
   const readMeta = (name) => {
     const meta = document.querySelector(`meta[name="${name}"]`)
     return meta?.getAttribute("content")?.trim() || ""
   }
 
+  const readWindowConfig = () => {
+    const config = window.JH_SUPABASE_CONFIG || {}
+    const url = typeof config.url === "string" ? config.url.trim() : ""
+    const anonKey =
+      typeof config.anonKey === "string" ? config.anonKey.trim() : ""
+    const writerEmail =
+      typeof config.writerEmail === "string" ? config.writerEmail.trim() : ""
+    return { url, anonKey, writerEmail }
+  }
+
   const getSupabaseConfig = () => {
-    const url = readMeta("supabase-url") || DEFAULT_SUPABASE_URL
-    const anonKey = readMeta("supabase-anon-key") || DEFAULT_SUPABASE_ANON_KEY
-    const writerEmail = readMeta("writer-email") || DEFAULT_WRITER_EMAIL
+    const windowConfig = readWindowConfig()
+    const url = windowConfig.url || readMeta("supabase-url")
+    const anonKey = windowConfig.anonKey || readMeta("supabase-anon-key")
+    const writerEmail = windowConfig.writerEmail || readMeta("writer-email")
     return { url, anonKey, writerEmail }
   }
 
@@ -67,6 +75,12 @@
     }
 
     const { url, anonKey } = getSupabaseConfig()
+    // 필수 설정 누락 시 조기 실패시키고 폴백 흐름이 동작하도록 합니다.
+    if (!url || !anonKey) {
+      throw new Error(
+        "Supabase 설정이 비어 있습니다. meta supabase-url/anon-key를 확인하세요."
+      )
+    }
     const { createClient } = await loadSupabaseLibrary()
     const client = createClient(url, anonKey, {
       auth: {
@@ -155,4 +169,3 @@
     signOut,
   }
 })()
-

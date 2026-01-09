@@ -4,6 +4,15 @@
 - 정적 사이트(GitHub Pages)에서 Google 로그인 + 글(Post) CRUD를 제공합니다.
 - 비용을 최소화하기 위해 별도 API 서버 없이 Supabase(Auth + DB + RLS)로 구현합니다.
 
+## 0) 운영/배포 메모
+
+- 콘솔: https://supabase.com/dashboard
+- 프론트 설정은 `apps/web/assets/supabase-config.js`에서 한 곳에 관리합니다.
+  - `url`, `anonKey`, `writerEmail`을 수정합니다.
+- 필요하면 HTML meta로 페이지별 오버라이드가 가능합니다.
+  - `supabase-url`, `supabase-anon-key`, `writer-email`
+  - 예: `<meta name="supabase-url" content="...">`
+
 ## 1) Supabase Auth (Google OAuth)
 
 ### Google Provider 활성화
@@ -124,6 +133,18 @@ python3 -m http.server 8000
 ```
 
 그 다음 `http://localhost:8000`에서 확인합니다.
+
+## 5-1) 초기 데이터 시드(선택)
+
+- 테이블 생성/RLS 적용 후에만 실행합니다.
+- SQL Editor에서 `apps/docs/supabase-seed.sql` 내용을 실행합니다.
+
+## 5-2) 배포 확인 플로우
+
+1. Supabase Dashboard에서 Auth → Providers → Google 설정과 Redirect URL이 정확한지 확인합니다.
+2. `apps/web/assets/supabase-config.js`가 배포 산출물에 포함되는지 확인합니다.
+3. 배포 후 `https://<domain>/auth/callback.html`에 직접 접근해 콜백 페이지가 로드되는지 확인합니다.
+4. 메인 페이지에서 로그인 → 글쓰기/편집 권한이 writer 계정에만 노출되는지 확인합니다.
 
 ---
 
@@ -322,4 +343,3 @@ for all
 using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com')
 with check ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
 ```
-

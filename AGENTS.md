@@ -1,6 +1,11 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: API/Infra 중단에 맞춰 불필요한 GitHub Actions 워크플로우 제거(api-deploy.yml, terraform-apply.yml, terraform-plan.yml).
+- 2026-01-09: Supabase 설정을 `assets/supabase-config.js`로 단일화하고 각 HTML에서 로드하도록 정리(index.html, blog.html, resume.html, post.html, builder.html, auth/callback.html, supabase.js).
+- 2026-01-09: Supabase 설정 meta를 주요 HTML에 추가해 모든 페이지에서 인증/데이터 로딩을 보장(index.html, blog.html, resume.html, post.html, builder.html, auth/callback.html).
+- 2026-01-09: Supabase 설정을 meta 주입으로 전환하고 운영/시드 문서를 보강(supabase.js, docs/supabase.md).
+- 2026-01-09: 백엔드 배포 부담으로 `apps/infra`, `apps/api` 제거하고 Supabase 전환에 맞춰 앱 구조를 단순화.
 - 2026-01-07: 기존 정적 UI를 `apps/web`로 이식하고, 데이터(profile/targets/posts)를 `apps/api`의 `/api/*` 엔드포인트로 전환.
 - 2026-01-07: AWS 배포 학습용 Terraform 스캐폴딩 추가(`infra/terraform`: bootstrap + ECS Fargate + ALB 모듈/환경 템플릿).
 - 2026-01-07: GitHub Actions 워크플로우 추가(Terraform PR plan + 코멘트 apply, API Docker→ECR→ECS 배포) 및 prod 환경으로 정리.

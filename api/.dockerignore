@@ -1,8 +1,0 @@
-# Docker build context 최적화
-build/
-.gradle/
-.idea/
-out/
-**/*.iml
-.DS_Store
-
