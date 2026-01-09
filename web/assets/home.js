@@ -16,6 +16,9 @@
   const title = document.getElementById('homeTitle');
   const summary = document.getElementById('homeSummary');
   const links = document.getElementById('homeLinks');
+  const highlights = document.getElementById('homeHighlights');
+  const focus = document.getElementById('homeFocus');
+  const stack = document.getElementById('homeStack');
 
   // Guard: only run on home page.
   if (!title || !summary) {
@@ -59,6 +62,52 @@
     `;
   };
 
+  /**
+   * 성과 하이라이트를 렌더링합니다.
+   *
+   * - achievements 배열을 우선 사용하고, 없으면 기본 메시지를 유지합니다.
+   * - 너무 길어지지 않도록 상위 4개만 노출합니다.
+   */
+  const renderHighlights = (profile) => {
+    if (!highlights) {
+      return;
+    }
+    const items = Array.isArray(profile?.achievements) ? profile.achievements : [];
+    const visible = items.slice(0, 4);
+    if (!visible.length) {
+      highlights.innerHTML = '<li>성과 데이터를 준비 중입니다.</li>';
+      return;
+    }
+    highlights.innerHTML = visible.map((item) => `<li>${item}</li>`).join('');
+  };
+
+  /**
+   * 홈의 포커스 문구와 핵심 스택 태그를 렌더링합니다.
+   *
+   * - intro가 있으면 우선 사용하고, 없으면 summary를 요약 문구로 사용합니다.
+   * - skills에서 상위 카테고리 항목을 6개까지 뽑아 태그로 표시합니다.
+   */
+  const renderFocus = (profile) => {
+    if (focus) {
+      const intro = profile?.intro || profile?.summary;
+      focus.textContent = intro || '현재는 운영 안정성과 데이터 기반 개선에 집중하고 있습니다.';
+    }
+
+    if (!stack) {
+      return;
+    }
+    const skillGroups = Array.isArray(profile?.skills) ? profile.skills : [];
+    const tags = skillGroups
+      .flatMap((group) => (Array.isArray(group.items) ? group.items : []))
+      .slice(0, 6);
+
+    if (!tags.length) {
+      stack.innerHTML = '';
+      return;
+    }
+    stack.innerHTML = tags.map((item) => `<span class="hero-tag">${item}</span>`).join('');
+  };
+
   const renderProfile = (profile) => {
     const basics = profile?.basics || {};
     const name = basics.name || '이름';
@@ -68,6 +117,8 @@
     summary.textContent = profile?.summary || '프로필 요약을 준비 중입니다.';
 
     renderLinks(profile);
+    renderHighlights(profile);
+    renderFocus(profile);
   };
 
   const renderError = () => {

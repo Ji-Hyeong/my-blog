@@ -8,17 +8,7 @@
   </head>
   <body>
     <!-- Lightweight post layout reuses shared styles. -->
-    <header class="site-header">
-      <div class="container nav-row">
-        <div class="brand">JH · Backend</div>
-        <nav class="nav-links">
-          <a class="nav-link" href="../index.html">Home</a>
-          <a class="nav-link" href="../resume.html">Resume</a>
-          <a class="nav-link" href="../builder.html">Tailor</a>
-          <a class="nav-link" href="../blog.html">Blog</a>
-        </nav>
-      </div>
-    </header>
+    <div id="siteHeader" data-show-auth="false"></div>
 
     <main class="container page">
       <section class="reveal" data-delay="0.05">
@@ -61,6 +51,7 @@
       </div>
     </footer>
 
+    <script src="../assets/header.js"></script>
     <script src="../assets/app.js"></script>
   </body>
 </html>

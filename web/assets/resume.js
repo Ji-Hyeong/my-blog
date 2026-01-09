@@ -52,9 +52,11 @@
   };
 
   const renderCompany = (company) => `
-    <article class="card">
-      <h3>${company.name}</h3>
-      <p>${company.role} · ${company.period}</p>
+    <article class="card resume-card">
+      <div class="resume-company-head">
+        <h3>${company.name}</h3>
+        <p class="resume-muted">${company.role} · ${company.period}</p>
+      </div>
       ${company.summary ? `<p>${company.summary}</p>` : ''}
       ${renderCompanyProjects(company.projects || [], '프로젝트')}
       ${renderCompanyProjects(company.initiatives || [], '개선/표준화')}
@@ -62,7 +64,7 @@
   `;
 
   const renderSkill = (group) => `
-    <div class="card">
+    <div class="card resume-card">
       <h3>${group.category}</h3>
       <p>${group.items.join(' · ')}</p>
     </div>
@@ -71,12 +73,12 @@
   // If fetch fails (local file restrictions), show a helpful message.
   const renderError = () => {
     resumeRoot.innerHTML = `
-      <div class="card">
+      <div class="card resume-card">
         <h3>데이터 로딩 실패</h3>
         <p>
-          API 연결에 실패했습니다.
+          Supabase 또는 정적 데이터 로딩에 실패했습니다.
           <br />
-          로컬: <code>apps/api</code>를 실행하고 <code>/api/profile</code>이 응답하는지 확인해 주세요.
+          <code>assets/supabase-config.js</code> 설정과 네트워크 상태를 확인해 주세요.
         </p>
       </div>
     `;
@@ -90,7 +92,12 @@
    */
 
   const renderResume = (data) => {
+    const basics = data.basics || {};
     const companies = Array.isArray(data.companies) ? data.companies : [];
+    const achievements = Array.isArray(data.achievements) ? data.achievements : [];
+    const skills = Array.isArray(data.skills) ? data.skills : [];
+    const education = Array.isArray(data.education) ? data.education : [];
+    const links = Array.isArray(basics.links) ? basics.links : [];
     /**
      * 교육/대외활동(선택) 목록입니다.
      *
@@ -98,25 +105,30 @@
      * - 데이터가 없을 수 있으므로, 렌더링은 조건부로 처리합니다.
      */
     const trainings = Array.isArray(data.trainings) ? data.trainings : [];
+    // 메인 이력서 레이아웃: 상단 요약 → 경력 → 기술 → 성과 → 학력 순으로 정렬합니다.
     resumeRoot.innerHTML = `
-        <section class="section">
-          <h2>${data.basics.name}</h2>
-          <p>${data.basics.title}</p>
-          <div class="meta">
-            <span>${data.basics.email}</span>
-            <span>${data.basics.phone}</span>
-            <span>${data.basics.location}</span>
+        <section class="section resume-hero">
+          <div class="card resume-card resume-hero-card">
+            <div class="resume-hero-top">
+              <div>
+                <h2>${basics.name || '이름'}</h2>
+                <p class="resume-title">${basics.title || 'Backend Engineer'}</p>
+              </div>
+              <div class="resume-contact">
+                <span>${basics.email || ''}</span>
+                <span>${basics.phone || ''}</span>
+                <span>${basics.location || ''}</span>
+              </div>
+            </div>
+            <p class="resume-summary">${data.summary || '요약을 준비 중입니다.'}</p>
+            ${
+              links.length
+                ? `<div class="resume-links">
+                    ${links.map((link) => `<a href="${link.url}">${link.label}</a>`).join('')}
+                  </div>`
+                : ''
+            }
           </div>
-          <div class="meta">
-            ${data.basics.links
-              .map((link) => `<a href="${link.url}">${link.label}</a>`)
-              .join('')}
-          </div>
-        </section>
-
-        <section class="section">
-          <h2>요약</h2>
-          <p>${data.summary}</p>
         </section>
 
         <section class="section">
@@ -125,32 +137,26 @@
         </section>
 
         <section class="section">
-          <h2>프로젝트</h2>
-          <p>경력 섹션에 회사별 프로젝트를 정리했습니다.</p>
-        </section>
-
-        <section class="section">
-          <h2>개선/표준화</h2>
-          <p>경력 섹션에 회사별 개선 항목을 정리했습니다.</p>
-        </section>
-
-        <section class="section">
           <h2>기술 스택</h2>
-          ${data.skills.map(renderSkill).join('')}
+          <div class="resume-grid">
+            ${skills.map(renderSkill).join('')}
+          </div>
         </section>
 
         <section class="section">
           <h2>성과</h2>
-          <ul>
-            ${data.achievements.map((item) => `<li>${item}</li>`).join('')}
+          <ul class="resume-list">
+            ${achievements.map((item) => `<li>${item}</li>`).join('')}
           </ul>
         </section>
 
         <section class="section">
           <h2>학력</h2>
-          ${data.education
-            .map((item) => `<p>${item.school} · ${item.major} (${item.period})</p>`)
-            .join('')}
+          <div class="resume-stack">
+            ${education
+              .map((item) => `<p>${item.school} · ${item.major} (${item.period})</p>`)
+              .join('')}
+          </div>
         </section>
 
         ${
@@ -158,7 +164,7 @@
             ? `
         <section class="section">
           <h2>교육/대외활동</h2>
-          <ul>
+          <ul class="resume-list">
             ${trainings
               .map((item) => `<li>${item.name} (${item.period})</li>`)
               .join('')}

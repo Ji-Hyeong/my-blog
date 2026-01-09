@@ -1,6 +1,8 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: 홈/이력서 UI 개선 및 로그인 상태에 따른 탭/CTA 숨김 적용(header.js, home.js, resume.js, style.css, index.html, resume.html).
+- 2026-01-09: 헤더/탭 내비게이션을 공통 스크립트로 분리해 언어/구조를 단일화(header.js).
 - 2026-01-09: API/Infra 중단에 맞춰 불필요한 GitHub Actions 워크플로우 제거(api-deploy.yml, terraform-apply.yml, terraform-plan.yml).
 - 2026-01-09: Supabase 설정을 `assets/supabase-config.js`로 단일화하고 각 HTML에서 로드하도록 정리(index.html, blog.html, resume.html, post.html, builder.html, auth/callback.html, supabase.js).
 - 2026-01-09: Supabase 설정 meta를 주요 HTML에 추가해 모든 페이지에서 인증/데이터 로딩을 보장(index.html, blog.html, resume.html, post.html, builder.html, auth/callback.html).

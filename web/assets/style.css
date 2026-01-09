@@ -164,6 +164,50 @@ a {
   flex-wrap: wrap;
 }
 
+/* Home summary panel layout for the right column. */
+.hero-panel {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.hero-card {
+  display: grid;
+  gap: 12px;
+}
+
+.hero-panel-title {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.hero-panel-body {
+  color: var(--ink-muted);
+}
+
+.hero-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink);
+}
+
 .button {
   padding: 12px 20px;
   border-radius: 999px;
@@ -292,6 +336,68 @@ a {
   background: #151515;
   font-size: 12px;
   margin-right: 8px;
+}
+
+/* Resume layout enhancements for readability. */
+.resume-hero-card {
+  display: grid;
+  gap: 14px;
+}
+
+.resume-hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.resume-title {
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.resume-contact {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
+.resume-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.resume-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.resume-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+}
+
+.resume-stack {
+  display: grid;
+  gap: 6px;
+}
+
+.resume-muted {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.resume-company-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* Builder layout for left/center/right panels. */

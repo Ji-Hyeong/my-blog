@@ -10,25 +10,15 @@
   </head>
   <body>
     <!-- Shared navigation for quick access to builder and blog. -->
-    <header class="site-header">
-      <div class="container nav-row">
-        <div class="brand">JH · Backend</div>
-        <nav class="nav-links">
-          <a class="nav-link" href="index.html">소개</a>
-          <a class="nav-link" href="resume.html">이력서</a>
-          <a class="nav-link" href="builder.html">맞춤</a>
-          <a class="nav-link" href="blog.html">기록</a>
-        </nav>
-        <div class="auth-area" id="authArea"></div>
-      </div>
-    </header>
+    <div id="siteHeader" data-show-auth="true"></div>
 
     <main class="container page">
       <section class="reveal" data-delay="0.05">
+        <p class="eyebrow">Resume</p>
         <h1 class="page-title">기본 이력서</h1>
         <p class="page-desc">
-          “전체 이력”을 한곳에 모아두는 페이지입니다. 회사/프로젝트/개선 항목을 빠르게 훑고,
-          필요하면 맞춤 탭에서 키워드 기반으로 골라 PDF로 출력합니다.
+          전체 이력을 한 번에 파악하도록 구성했습니다. 회사/프로젝트/개선 항목을 먼저 훑고,
+          필요하면 맞춤 탭에서 키워드 기반으로 정리합니다.
         </p>
       </section>
 
@@ -42,6 +32,7 @@
       </div>
     </footer>
 
+    <script src="assets/header.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/supabase-config.js"></script>
     <script src="assets/supabase.js"></script>

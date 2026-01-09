@@ -14,25 +14,7 @@
   </head>
   <body>
     <!-- Top navigation shared across pages. -->
-    <header class="site-header">
-      <div class="container nav-row">
-        <div class="brand">JH · Backend</div>
-        <nav class="nav-links">
-          <!--
-            탭의 역할(의도):
-            - 소개: 나를 빠르게 이해시키는 “프로필 허브”
-            - 이력서: 전체 이력(회사/프로젝트/개선)을 모아 보는 페이지
-            - 맞춤: 키워드 기반으로 항목을 골라 PDF로 출력하는 도구
-            - 기록: 짧은 글/메모를 쌓는 공간(후에 소재로 재활용)
-          -->
-          <a class="nav-link" href="index.html">소개</a>
-          <a class="nav-link" href="resume.html">이력서</a>
-          <a class="nav-link" href="builder.html">맞춤</a>
-          <a class="nav-link" href="blog.html">기록</a>
-        </nav>
-        <div class="auth-area" id="authArea"></div>
-      </div>
-    </header>
+    <div id="siteHeader" data-show-auth="true"></div>
 
     <!--
       Home은 “나를 기록하고 알리는 프로필 허브”로 사용합니다.
@@ -49,13 +31,32 @@
         <p class="hero-body" id="homeSummary">
           프로젝트/개선 이력을 정리하고, 필요할 때 근거 있는 형태로 꺼내 쓰는 공간입니다.
         </p>
+        <!-- 맞춤/기록은 로그인 이후에만 노출됩니다. -->
         <div class="hero-actions">
           <a class="button primary" href="resume.html">이력서 보기</a>
-          <a class="button ghost" href="builder.html">맞춤 이력서</a>
-          <a class="button ghost" href="blog.html">기록 보기</a>
+          <a class="button ghost" href="builder.html" data-requires-auth="true">맞춤 이력서</a>
+          <a class="button ghost" href="blog.html" data-requires-auth="true">기록 보기</a>
         </div>
         <div class="home-links" id="homeLinks"></div>
       </section>
+
+      <!-- Summary panel keeps the home layout structured and scannable. -->
+      <aside class="hero-panel reveal" data-delay="0.1">
+        <div class="card hero-card">
+          <p class="eyebrow">Snapshot</p>
+          <h2 class="hero-panel-title">최근 성과/핵심 포인트</h2>
+          <ul class="hero-list" id="homeHighlights">
+            <li>성과 데이터를 준비 중입니다.</li>
+          </ul>
+        </div>
+        <div class="card hero-card">
+          <p class="eyebrow">Focus</p>
+          <p class="hero-panel-body" id="homeFocus">
+            현재는 운영 안정성과 데이터 기반 개선에 집중하고 있습니다.
+          </p>
+          <div class="hero-tags" id="homeStack"></div>
+        </div>
+      </aside>
     </main>
 
     <footer class="site-footer">
@@ -64,6 +65,7 @@
       </div>
     </footer>
 
+    <script src="assets/header.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/supabase-config.js"></script>
     <script src="assets/supabase.js"></script>

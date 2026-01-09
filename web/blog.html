@@ -10,18 +10,7 @@
   </head>
   <body>
     <!-- Shared navigation. -->
-    <header class="site-header">
-      <div class="container nav-row">
-        <div class="brand">JH · Backend</div>
-        <nav class="nav-links">
-          <a class="nav-link" href="index.html">소개</a>
-          <a class="nav-link" href="resume.html">이력서</a>
-          <a class="nav-link" href="builder.html">맞춤</a>
-          <a class="nav-link" href="blog.html">기록</a>
-        </nav>
-        <div class="auth-area" id="authArea"></div>
-      </div>
-    </header>
+    <div id="siteHeader" data-show-auth="true"></div>
 
     <main class="container page">
       <section class="reveal" data-delay="0.05">
@@ -88,6 +77,7 @@
       </div>
     </footer>
 
+    <script src="assets/header.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/supabase-config.js"></script>
     <script src="assets/supabase.js"></script>
