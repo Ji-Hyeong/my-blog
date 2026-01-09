@@ -16,14 +16,18 @@
    *
    * - 기존 UI 구조/스타일을 유지하기 위해 HTML 구조는 최대한 기존 형태를 보존합니다.
    */
-  const renderError = () => {
+  const renderError = (message) => {
     blogRoot.innerHTML = `
       <div class="card">
         <h3>데이터 로딩 실패</h3>
         <p>
-          API 연결에 실패했습니다.
-          <br />
-          로컬: <code>apps/api</code>를 실행하고 <code>/api/posts</code>가 응답하는지 확인해 주세요.
+          ${message || '글 데이터를 불러오지 못했습니다.'}
+        </p>
+        <p class="home-muted" style="margin-top: 10px; line-height: 1.7;">
+          체크 포인트:
+          <br />- Supabase에 <code>posts</code> 테이블/RLS 정책이 적용되어 있는지
+          <br />- 공개 방문자는 <code>published=true</code> 글만 읽을 수 있는지
+          <br />- 로컬에서 Supabase 없이 확인하려면 <code>/data/posts.json</code>이 존재하는지
         </p>
       </div>
     `;
@@ -75,9 +79,10 @@
   /**
    * 데이터 로딩 전략:
    * 1) Supabase(posts 테이블)에서 목록을 조회합니다.
-   * 2) Supabase가 없거나 실패하면 API(`/api/posts`) → 정적(`/data/posts.json`)로 폴백합니다.
+   * 2) Supabase가 없거나 실패하면 정적(`/data/posts.json`) → API(`/api/posts`)로 폴백합니다.
    */
   const loadPosts = async () => {
+    let supabaseFailure = null;
     /**
      * 1) Supabase 우선
      *
@@ -119,6 +124,7 @@
 
       return { source: 'supabase', posts, isWriter };
     } catch (error) {
+      supabaseFailure = error;
       // writerControls는 Supabase 기반일 때만 의미가 있으므로, 폴백에서는 숨깁니다.
       if (writerControls) {
         writerControls.style.display = 'none';
@@ -126,17 +132,24 @@
     }
 
     /**
-     * 2) API → 정적 폴백
+     * 2) 정적 → API 폴백
      */
     const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || 'http://localhost:8080';
     try {
-      const data = await fetchJsonOrThrow(`${apiBaseUrl}/api/posts`);
-      const posts = (data.posts || []).map((post) => ({ ...post }));
-      return { source: 'legacy', posts, isWriter: false };
-    } catch (error) {
       const data = await fetchJsonOrThrow('/data/posts.json');
       const posts = (data.posts || []).map((post) => ({ ...post }));
       return { source: 'legacy', posts, isWriter: false };
+    } catch (error) {
+      try {
+        const data = await fetchJsonOrThrow(`${apiBaseUrl}/api/posts`);
+        const posts = (data.posts || []).map((post) => ({ ...post }));
+        return { source: 'legacy', posts, isWriter: false };
+      } catch (apiError) {
+        const hint = supabaseFailure
+          ? `Supabase 오류로 폴백했지만 정적/로컬 API도 실패했습니다.`
+          : `정적/로컬 API에서 글 데이터를 찾지 못했습니다.`
+        throw new Error(hint)
+      }
     }
   };
 
@@ -321,7 +334,7 @@
         await bindWriterCrud();
       }
     } catch (error) {
-      renderError();
+      renderError(error?.message);
     }
   };
 
