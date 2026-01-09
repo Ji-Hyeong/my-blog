@@ -10,7 +10,7 @@
 # - plan 출력에는 민감 값이 섞일 수 있으므로, Terraform에서 `sensitive = true`를 적극 활용하세요.
 #
 
-name: terraform-plan
+name: Infra Plan (Terraform)
 
 on:
   pull_request:

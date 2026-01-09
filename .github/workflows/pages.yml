@@ -10,7 +10,7 @@
 #   현재 `web/`은 레거시 정적 HTML/CSS/JS를 그대로 서빙하는 구조이기 때문입니다.
 #
 
-name: pages
+name: Deploy Web (GitHub Pages)
 
 on:
   push:

@@ -10,7 +10,7 @@
 # - fork PR에서는 기본적으로 안전하지 않으므로 apply를 차단합니다.
 #
 
-name: terraform-apply
+name: Infra Apply (Terraform)
 
 on:
   issue_comment:

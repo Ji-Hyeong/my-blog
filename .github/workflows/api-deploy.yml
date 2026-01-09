@@ -14,7 +14,7 @@
 # - AWS 인증은 GitHub OIDC AssumeRole을 사용합니다.
 #
 
-name: api-deploy
+name: Deploy API (ECR → ECS)
 
 on:
   push:
