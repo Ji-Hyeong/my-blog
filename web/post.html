@@ -3,13 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- index.html과 동일한 API 기본 주소 규칙을 사용합니다. -->
     <meta name="api-base-url" content="" />
-    <title>Resume · Backend Engineer</title>
+    <title>Post · JH</title>
     <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
-    <!-- Shared navigation for quick access to builder and blog. -->
     <header class="site-header">
       <div class="container nav-row">
         <div class="brand">JH · Backend</div>
@@ -25,26 +23,24 @@
 
     <main class="container page">
       <section class="reveal" data-delay="0.05">
-        <h1 class="page-title">기본 이력서</h1>
-        <p class="page-desc">
-          “전체 이력”을 한곳에 모아두는 페이지입니다. 회사/프로젝트/개선 항목을 빠르게 훑고,
-          필요하면 맞춤 탭에서 키워드 기반으로 골라 PDF로 출력합니다.
-        </p>
+        <a class="button ghost" href="blog.html">← 목록으로</a>
+        <h1 class="page-title" id="postTitle" style="margin-top: 16px;">글</h1>
+        <p class="page-desc" id="postMeta"></p>
       </section>
 
-      <!-- Resume content will be injected by resume.js from API (/api/profile). -->
-      <section id="resume" class="section reveal" data-delay="0.1"></section>
+      <section class="section reveal" data-delay="0.1" id="postBody"></section>
     </main>
 
     <footer class="site-footer">
       <div class="container footer-row">
-        <span>Resume is synced with profile data.</span>
+        <span>Notes that can be reused.</span>
       </div>
     </footer>
 
     <script src="assets/app.js"></script>
     <script src="assets/supabase.js"></script>
     <script src="assets/auth.js"></script>
-    <script src="assets/resume.js"></script>
+    <script src="assets/post.js"></script>
   </body>
 </html>
+

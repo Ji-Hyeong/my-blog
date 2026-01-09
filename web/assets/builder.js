@@ -4,7 +4,7 @@
   - Lets the user select items and generates a focused preview.
   - Uses window.print() for PDF output.
 */
-;(() => {
+;(async () => {
   const targetSelect = document.getElementById("targetSelect")
   const companyName = document.getElementById("companyName")
   const roleName = document.getElementById("roleName")
@@ -28,8 +28,61 @@
   const resetSelectButton = document.getElementById("resetSelect")
   const exportPdfButton = document.getElementById("exportPdf")
 
+  /**
+   * 맞춤 이력서는 “작성자 전용” 기능입니다.
+   *
+   * - 공개 방문자에게는 기본 이력서(Resume)만 제공하고,
+   * - 맞춤 조합/출력은 allowlist 계정만 사용할 수 있게 제한합니다.
+   *
+   * 주의:
+   * - 이 체크는 UX 레벨 가드이며, 보안은 Supabase RLS(글쓰기 등)에서 강제합니다.
+   * - 맞춤 이력서는 현재 로컬에서만 출력(PDF)하므로, 여기서는 기능 접근만 제한합니다.
+   */
+  const requireWriter = async () => {
+    try {
+      const session = await window.JH_SUPABASE?.getSession?.()
+      const isWriter = window.JH_SUPABASE?.isWriter?.(session)
+      if (isWriter) {
+        return true
+      }
+
+      const root = document.getElementById("builderRoot") || document.body
+      root.innerHTML = `
+        <div class="container page">
+          <section class="section reveal" data-delay="0.05">
+            <h1 class="page-title">맞춤 이력서</h1>
+            <p class="page-desc">
+              이 기능은 작성자 전용입니다. Google로 로그인해 주세요.
+            </p>
+            <div class="card" style="margin-top: 18px;">
+              <button class="button primary" id="builderLoginBtn">Google 로그인</button>
+              <a class="button ghost" href="resume.html">기본 이력서 보기</a>
+            </div>
+          </section>
+        </div>
+      `
+
+      const loginBtn = document.getElementById("builderLoginBtn")
+      if (loginBtn) {
+        loginBtn.addEventListener("click", async () => {
+          await window.JH_SUPABASE.signInWithGoogle()
+        })
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
+
   // Guard: skip if builder elements are not present.
   if (!targetSelect || !experienceList || !projectList || !initiativeList) {
+    return
+  }
+
+  // Writer guard: block the page early.
+  // - 작성자가 아니면 아래 로직(데이터 로딩/렌더링/이벤트 바인딩)을 실행하지 않습니다.
+  const allowed = await requireWriter()
+  if (!allowed) {
     return
   }
 

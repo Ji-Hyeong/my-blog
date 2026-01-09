@@ -19,6 +19,7 @@
           <a class="nav-link" href="builder.html">맞춤</a>
           <a class="nav-link" href="blog.html">기록</a>
         </nav>
+        <div class="auth-area" id="authArea"></div>
       </div>
     </header>
 
@@ -28,6 +29,53 @@
         <p class="page-desc">
           작업/학습/회고를 짧게 남기는 공간입니다. 길게 쓰기보다 “나중에 다시 꺼내 쓸 수 있는 기록”을 목표로 합니다.
         </p>
+      </section>
+
+      <!-- Writer-only controls (Supabase allowlist). -->
+      <section class="section reveal" data-delay="0.08" id="writerControls" style="display: none;">
+        <div class="card">
+          <h3>글 관리(작성자 전용)</h3>
+          <p class="page-desc">
+            새 글을 작성하거나 기존 글을 수정/삭제할 수 있습니다. 공개 범위는 <code>published</code>로 제어합니다.
+          </p>
+          <form id="postForm" class="section" autocomplete="off">
+            <div class="field">
+              <label for="postSlug">Slug</label>
+              <input id="postSlug" type="text" placeholder="예: payment-retry-outbox" />
+            </div>
+            <div class="field">
+              <label for="postTitle">Title</label>
+              <input id="postTitle" type="text" placeholder="제목" />
+            </div>
+            <div class="field">
+              <label for="postCategory">Category</label>
+              <input id="postCategory" type="text" placeholder="예: Engineering" />
+            </div>
+            <div class="field">
+              <label for="postDate">Date</label>
+              <input id="postDate" type="date" />
+            </div>
+            <div class="field">
+              <label for="postExcerpt">Excerpt</label>
+              <input id="postExcerpt" type="text" placeholder="카드에 보일 짧은 소개" />
+            </div>
+            <div class="field">
+              <label for="postContent">Content</label>
+              <textarea id="postContent" rows="10" placeholder="본문(plain text 또는 markdown)"></textarea>
+            </div>
+            <div class="field">
+              <label>
+                <input id="postPublished" type="checkbox" />
+                published
+              </label>
+            </div>
+            <div class="hero-actions">
+              <button class="button primary" type="submit">저장</button>
+              <button class="button ghost" type="button" id="postReset">초기화</button>
+            </div>
+            <p class="home-muted" id="postStatus" style="margin-top: 10px;"></p>
+          </form>
+        </div>
       </section>
 
       <!-- Blog cards are generated from API (/api/posts). -->
@@ -41,6 +89,8 @@
     </footer>
 
     <script src="assets/app.js"></script>
+    <script src="assets/supabase.js"></script>
+    <script src="assets/auth.js"></script>
     <script src="assets/blog.js"></script>
   </body>
 </html>

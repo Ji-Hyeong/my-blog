@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Supabase 설정(기본값은 assets/supabase.js에 있음). 필요하면 meta로 override -->
+    <meta name="supabase-url" content="" />
+    <meta name="supabase-anon-key" content="" />
+    <meta name="writer-email" content="" />
+    <title>Auth Callback</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body>
+    <main class="container page">
+      <section class="reveal" data-delay="0.05">
+        <h1 class="page-title">로그인 처리 중…</h1>
+        <p class="page-desc">잠시만 기다려주세요.</p>
+        <div class="card" id="callbackStatus" style="margin-top: 24px;">
+          세션을 확인하고 있습니다.
+        </div>
+      </section>
+    </main>
+
+    <script src="../assets/app.js"></script>
+    <script src="../assets/supabase.js"></script>
+    <script>
+      /*
+        OAuth callback handler.
+
+        Supabase의 Google OAuth는 redirect 이후 URL query에 code를 포함합니다.
+        이 페이지는 code를 세션으로 교환한 뒤, 로그인 시작 페이지로 다시 이동시킵니다.
+      */
+      (async () => {
+        const status = document.getElementById("callbackStatus");
+        const client = await window.JH_SUPABASE.getSupabaseClient();
+
+        try {
+          const url = new URL(window.location.href);
+          const code = url.searchParams.get("code");
+
+          if (!code) {
+            status.textContent = "로그인 코드가 없습니다. 다시 시도해 주세요.";
+            return;
+          }
+
+          status.textContent = "세션 교환 중…";
+          const { error } = await client.auth.exchangeCodeForSession(code);
+          if (error) {
+            status.textContent = "세션 교환에 실패했습니다. 다시 시도해 주세요.";
+            return;
+          }
+
+          const returnTo = localStorage.getItem("jh_return_to") || "/index.html";
+          localStorage.removeItem("jh_return_to");
+          status.textContent = "완료. 이동 중…";
+          window.location.replace(returnTo);
+        } catch (error) {
+          status.textContent = "로그인 처리 중 오류가 발생했습니다.";
+        }
+      })();
+    </script>
+  </body>
+</html>
+
