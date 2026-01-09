@@ -44,13 +44,37 @@
   };
 
   /**
+   * JSON을 안전하게 fetch합니다.
+   *
+   * - `fetch()`는 404/500이어도 예외를 던지지 않으므로 상태 코드를 확인합니다.
+   * - 실패 시 호출부에서 폴백 전략을 적용할 수 있도록 예외를 던집니다.
+   */
+  const fetchJsonOrThrow = async (url) => {
+    const response = await fetch(url, { cache: 'no-cache' });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} from ${url}`);
+    }
+    return response.json();
+  };
+
+  /**
+   * 데이터 로딩 전략:
+   * 1) API(`/api/posts`) 호출을 먼저 시도합니다.
+   * 2) 실패하면 GitHub Pages 정적 배포 경로(`/data/posts.json`)로 폴백합니다.
+   */
+  const loadPostsData = async (apiBaseUrl) => {
+    try {
+      return await fetchJsonOrThrow(`${apiBaseUrl}/api/posts`);
+    } catch (error) {
+      return fetchJsonOrThrow('/data/posts.json');
+    }
+  };
+
+  /**
    * 데이터는 “정적 파일(data/*.json)”이 아니라 백엔드 API에서 받아옵니다.
    * - 배포 환경에서는 HTTPS로 제공되는 API를 호출하게 됩니다.
    */
   const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || 'http://localhost:8080';
 
-  fetch(`${apiBaseUrl}/api/posts`)
-    .then((response) => response.json())
-    .then(renderPosts)
-    .catch(renderError);
+  loadPostsData(apiBaseUrl).then(renderPosts).catch(renderError);
 })();

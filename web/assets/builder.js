@@ -39,6 +39,20 @@
     selected: new Set(),
   }
 
+  /**
+   * JSON을 안전하게 fetch합니다.
+   *
+   * - `fetch()`는 404/500이어도 예외를 던지지 않기 때문에 상태 코드를 확인합니다.
+   * - 실패 시 호출부에서 폴백(정적 JSON) 전략을 적용할 수 있도록 예외를 던집니다.
+   */
+  const fetchJsonOrThrow = async (url) => {
+    const response = await fetch(url, { cache: "no-cache" })
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} from ${url}`)
+    }
+    return response.json()
+  }
+
   const toTagList = (value) =>
     value
       .split(",")
@@ -425,10 +439,21 @@
     const apiBaseUrl =
       window.JH_BLOG?.getApiBaseUrl?.() || "http://localhost:8080"
 
+    /**
+     * 데이터 로딩 전략:
+     * 1) API(`/api/profile`, `/api/targets`) 호출을 먼저 시도합니다.
+     * 2) 실패하면 GitHub Pages 정적 배포 경로(`/data/*.json`)로 폴백합니다.
+     *
+     * 이 폴백이 필요한 이유:
+     * - GitHub Pages는 정적 호스팅이므로 `/api/*`가 없습니다.
+     * - Pages 배포 단계에서 `apps/api`의 JSON을 `web/data/`로 복사해 함께 배포합니다.
+     */
     return Promise.all([
-      fetch(`${apiBaseUrl}/api/profile`).then((response) => response.json()),
-      fetch(`${apiBaseUrl}/api/targets`).then((response) => response.json()),
-    ])
+      fetchJsonOrThrow(`${apiBaseUrl}/api/profile`),
+      fetchJsonOrThrow(`${apiBaseUrl}/api/targets`),
+    ]).catch(() =>
+      Promise.all([fetchJsonOrThrow("/data/profile.json"), fetchJsonOrThrow("/data/targets.json")])
+    )
   }
 
   loadData()

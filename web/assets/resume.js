@@ -82,6 +82,40 @@
     `;
   };
 
+  /**
+   * JSON을 안전하게 fetch합니다.
+   *
+   * - `fetch()`는 404/500이어도 예외를 던지지 않으므로, 상태 코드를 확인해 명시적으로 실패 처리합니다.
+   * - 실패 시에는 호출부에서 다음 전략(예: 정적 JSON 폴백)을 선택할 수 있도록 예외를 던집니다.
+   */
+  const fetchJsonOrThrow = async (url) => {
+    const response = await fetch(url, { cache: 'no-cache' });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} from ${url}`);
+    }
+    return response.json();
+  };
+
+  /**
+   * 데이터 로딩 전략:
+   * 1) API(`/api/profile`) 호출을 먼저 시도합니다.
+   * 2) 실패하면 GitHub Pages 정적 배포 경로(`/data/profile.json`)로 폴백합니다.
+   *
+   * 왜 폴백이 필요한가?
+   * - GitHub Pages는 정적 호스팅이므로 기본적으로 `/api/*` 엔드포인트가 없습니다.
+   * - API를 별도 배포하지 않는 시기에도 “이력서 화면이 깨지지 않도록” 하기 위해,
+   *   Pages 배포 단계에서 `apps/api`의 JSON을 `web/data/`로 복사해 함께 배포합니다.
+   */
+  const loadProfileData = async (apiBaseUrl) => {
+    try {
+      return await fetchJsonOrThrow(`${apiBaseUrl}/api/profile`);
+    } catch (error) {
+      // 정적 JSON 폴백은 same-origin 기준 상대 경로가 가장 안전합니다.
+      // (custom domain / github.io 등 환경에 상관 없이 동작)
+      return fetchJsonOrThrow('/data/profile.json');
+    }
+  };
+
   const renderResume = (data) => {
     const companies = Array.isArray(data.companies) ? data.companies : [];
     /**
@@ -177,8 +211,5 @@
    */
   const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || 'http://localhost:8080';
 
-  fetch(`${apiBaseUrl}/api/profile`)
-    .then((response) => response.json())
-    .then(renderResume)
-    .catch(renderError);
+  loadProfileData(apiBaseUrl).then(renderResume).catch(renderError);
 })();

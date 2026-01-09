@@ -51,11 +51,16 @@ jobs:
         run: |
           set -euo pipefail
 
-          # GitHub Pages는 `web/` 디렉토리만 정적 호스팅합니다.
-          # 따라서 API가 참조하는 classpath JSON을 `web/public/data/`로 복사해
-          # “데이터 변경 → 정적 배포 반영”이 가능하도록 합니다.
-          mkdir -p web/public/data
-          cp -v api/src/main/resources/data/*.json web/public/data/
+          # GitHub Pages는 `web/` 디렉토리 자체를 정적 호스팅합니다(빌드 없이 업로드).
+          #
+          # 따라서 API가 참조하는 classpath JSON을 `web/data/`로 복사해
+          # 정적 URL(`/data/*.json`)로도 접근 가능하게 만듭니다.
+          #
+          # 참고:
+          # - 향후 Vite build로 전환하면 `web/public/data/`가 더 자연스러울 수 있습니다.
+          # - 현재는 “빌드 없이 배포”이므로 `web/data/`가 실제 배포 경로가 됩니다.
+          mkdir -p web/data
+          cp -v api/src/main/resources/data/*.json web/data/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
