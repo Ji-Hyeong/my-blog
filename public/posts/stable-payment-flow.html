@@ -4,55 +4,71 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>결제 트래픽 급증 대응기</title>
-    <link rel="icon" href="../favicon.svg" />
-    <link rel="stylesheet" href="../assets/style.css" />
+    <link rel="icon" href="/favicon.svg" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+        background: #f8f2e8;
+        color: #1d1b16;
+      }
+      .container {
+        width: min(960px, 92vw);
+        margin: 0 auto;
+        padding: 48px 0 80px;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #e6ddcf;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 12px 24px rgba(30, 24, 16, 0.1);
+      }
+      h1 {
+        margin: 0 0 12px;
+      }
+      h2 {
+        margin-top: 24px;
+      }
+      p {
+        color: #5e5a52;
+        line-height: 1.75;
+      }
+      a {
+        color: #2f6b5f;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
-    <!-- Lightweight post layout reuses shared styles. -->
-    <div id="siteHeader" data-show-auth="false"></div>
-
-    <main class="container page">
-      <section class="reveal" data-delay="0.05">
-        <p class="post-meta">Case Study · 2026-01-05</p>
-        <h1 class="page-title">결제 트래픽 급증 대응기</h1>
+    <main class="container">
+      <a href="/#/blog">← 목록으로</a>
+      <h1>결제 트래픽 급증 대응기</h1>
+      <p>Case Study · 2026-01-05</p>
+      <div class="card">
         <p>
           캠페인 기간 동안 결제 트래픽이 3배 이상 증가했을 때,
           시스템 안정성을 유지하기 위해 취한 단계별 대응을 정리합니다.
         </p>
-      </section>
 
-      <section class="section reveal" data-delay="0.1">
         <h2>문제 상황</h2>
         <p>
           결제 요청이 급증하면서 타임아웃과 중복 요청이 동시에 발생했고,
           일부 트랜잭션은 재시도로 인해 부하가 가중되는 상황이었습니다.
         </p>
-      </section>
 
-      <section class="section reveal" data-delay="0.15">
         <h2>대응 전략</h2>
         <p>
           1) 대기열을 분리하여 핵심 결제 흐름을 우선 처리하고,
           2) 멱등성 키 기준으로 재시도를 제한했으며,
           3) 모니터링 지표를 SLO 기준으로 재정의했습니다.
         </p>
-      </section>
 
-      <section class="section reveal" data-delay="0.2">
         <h2>결과</h2>
         <p>
           실패율을 0.8% 이하로 안정화했고, 평균 지연 시간은 34% 감소했습니다.
         </p>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-row">
-        <span>Back to focused operations.</span>
       </div>
-    </footer>
-
-    <script src="../assets/header.js"></script>
-    <script src="../assets/app.js"></script>
+    </main>
   </body>
 </html>

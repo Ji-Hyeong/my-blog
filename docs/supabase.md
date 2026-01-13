@@ -7,7 +7,7 @@
 ## 0) 운영/배포 메모
 
 - 콘솔: https://supabase.com/dashboard
-- 프론트 설정은 `apps/web/assets/supabase-config.js`에서 한 곳에 관리합니다.
+- 프론트 설정은 `apps/public/supabase-config.js`에서 한 곳에 관리합니다.
   - `url`, `anonKey`, `writerEmail`을 수정합니다.
 - 필요하면 HTML meta로 페이지별 오버라이드가 가능합니다.
   - `supabase-url`, `supabase-anon-key`, `writer-email`
@@ -117,22 +117,20 @@ using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
 
 ## 4) 프론트 코드 위치
 
-- Supabase 클라이언트: `apps/web/assets/supabase.js`
-- 상단 로그인 UI: `apps/web/assets/auth.js`
-- 글 목록/CRUD: `apps/web/assets/blog.js`, `apps/web/blog.html`
-- 글 상세: `apps/web/assets/post.js`, `apps/web/post.html`
-- OAuth 콜백: `apps/web/auth/callback.html`
+- Supabase 설정: `apps/public/supabase-config.js`
+- Supabase 클라이언트: `apps/public/supabase.js`
+- 데이터 로더: `apps/public/data-loader.js`
+- 레거시 페이지 스크립트: `apps/public/legacy/*.js`
+- SPA 라우팅/레이아웃: `apps/src/App.tsx`
+- OAuth 콜백: `apps/public/auth/callback.html`
 
 ## 5) 로컬 확인
 
-GitHub Pages와 동일한 방식으로 확인하려면:
-
 ```bash
-cd apps/web
-python3 -m http.server 8000
+cd apps
+npm install
+npm run dev
 ```
-
-그 다음 `http://localhost:8000`에서 확인합니다.
 
 ## 5-1) 초기 데이터 시드(선택)
 
@@ -142,7 +140,7 @@ python3 -m http.server 8000
 ## 5-2) 배포 확인 플로우
 
 1. Supabase Dashboard에서 Auth → Providers → Google 설정과 Redirect URL이 정확한지 확인합니다.
-2. `apps/web/assets/supabase-config.js`가 배포 산출물에 포함되는지 확인합니다.
+2. `apps/public/supabase-config.js`가 배포 산출물에 포함되는지 확인합니다.
 3. 배포 후 `https://<domain>/auth/callback.html`에 직접 접근해 콜백 페이지가 로드되는지 확인합니다.
 4. 메인 페이지에서 로그인 → 글쓰기/편집 권한이 writer 계정에만 노출되는지 확인합니다.
 

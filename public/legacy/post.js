@@ -41,15 +41,24 @@
         <h3>오류</h3>
         <p>${escapeHtml(message)}</p>
         <p class="home-muted" style="margin-top: 10px;">
-          글 목록으로 돌아가려면 <a href="blog.html">여기</a>를 클릭하세요.
+          글 목록으로 돌아가려면 <a href="#/blog">여기</a>를 클릭하세요.
         </p>
       </div>
     `
   }
 
   const boot = async () => {
+    /**
+     * Hash 라우팅(#/post/:slug)을 지원합니다.
+     *
+     * - 우선 hash 경로에서 slug를 추출하고,
+     * - 없으면 query string(slug=)을 폴백으로 사용합니다.
+     */
+    const hash = window.location.hash || ""
+    const hashMatch = hash.match(/^#\/post\/([^?]+)/)
+    const slugFromHash = hashMatch ? decodeURIComponent(hashMatch[1]) : ""
     const params = new URLSearchParams(window.location.search)
-    const slug = params.get("slug") || ""
+    const slug = slugFromHash || params.get("slug") || ""
 
     if (!slug) {
       renderError("slug가 없습니다.")
@@ -100,4 +109,3 @@
 
   boot()
 })()
-

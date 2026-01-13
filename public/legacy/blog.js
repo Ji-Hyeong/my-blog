@@ -34,9 +34,32 @@
   };
 
   /**
+   * API 기본 URL을 계산합니다.
+   *
+   * - meta(name="api-base-url")가 있으면 해당 값을 사용합니다.
+   * - 로컬 환경(localhost)에서는 기본값(8080)을 사용합니다.
+   * - 배포 환경에서는 현재 오리진을 사용합니다.
+   */
+  const getApiBaseUrl = () => {
+    const meta = document.querySelector('meta[name="api-base-url"]');
+    const override = meta?.getAttribute('content')?.trim();
+    if (override) {
+      return override.replace(/\/$/, '');
+    }
+
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    if (isLocalhost) {
+      return 'http://localhost:8080';
+    }
+
+    return window.location.origin;
+  };
+
+  /**
    * UI 카드 렌더링.
    *
-   * - Supabase 기반에서는 slug로 상세 페이지(post.html)로 이동합니다.
+   * - Supabase 기반에서는 slug로 상세 페이지(#/post/:slug)로 이동합니다.
    * - 과거/폴백 데이터(정적 posts.json)는 기존 href를 그대로 사용할 수 있습니다.
    */
   const renderPostCards = ({ posts, isWriter }) => {
@@ -119,7 +142,7 @@
         excerpt: row.excerpt,
         category: row.category,
         date: row.published_at ? String(row.published_at).slice(0, 10) : '',
-        href: row.slug ? `post.html?slug=${encodeURIComponent(row.slug)}` : '#',
+        href: row.slug ? `#/post/${encodeURIComponent(row.slug)}` : '#',
       }));
 
       return { source: 'supabase', posts, isWriter };
@@ -134,7 +157,7 @@
     /**
      * 2) 정적 → API 폴백
      */
-    const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || 'http://localhost:8080';
+    const apiBaseUrl = getApiBaseUrl();
     try {
       const data = await fetchJsonOrThrow('/data/posts.json');
       const posts = (data.posts || []).map((post) => ({ ...post }));

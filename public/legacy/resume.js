@@ -153,7 +153,7 @@
         <p>
           Supabase 또는 정적 데이터 로딩에 실패했습니다.
           <br />
-          <code>assets/supabase-config.js</code> 설정과 네트워크 상태를 확인해 주세요.
+          <code>public/supabase-config.js</code> 설정과 네트워크 상태를 확인해 주세요.
         </p>
       </div>
     `;
@@ -162,7 +162,7 @@
   /**
    * 데이터 로딩 전략(공통 로더 사용):
    *
-   * - assets/data-loader.js에 “Supabase → API → 정적 JSON” 우선순위 로더를 구현해두었습니다.
+   * - public/data-loader.js에 “Supabase → API → 정적 JSON” 우선순위 로더를 구현해두었습니다.
    * - 이 페이지는 이력서 렌더링만 담당하고, 데이터 소스 전환은 로더에 위임합니다.
    */
 

@@ -1,6 +1,8 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: `apps/web` 구조를 제거하고 Vite SPA를 레포 루트(apps)로 이동, 정적 자산을 `public/` 기준으로 정리.
+- 2026-01-09: 정적 HTML을 React SPA(Hash 라우팅)로 전환하고 빌드 기반 GitHub Pages 배포로 재구성(App.tsx, main.tsx, public/*, vite.config.ts, pages.yml).
 - 2026-01-09: 홈 CTA/링크를 제거하고 헤더에 GitHub 아이콘 링크를 추가(header.js, style.css, index.html).
 - 2026-01-09: 회사 아이콘 렌더링을 이력서에 반영하고 파비콘을 추가(resume.js, style.css, favicon.svg, html head).
 - 2026-01-09: 맞춤/기록 페이지 문구와 타이틀을 대외 톤에 맞게 정리(builder.html, blog.html).
@@ -32,4 +34,4 @@
 
 ## 메모
 - `reference/`, `me/`는 프론트 배포 범위에 포함하지 않음(민감/비공개 자료).
-- 배포 시 Web/API를 분리한다면 `apps/web/*.html`의 `<meta name="api-base-url">` 값으로 API 주소를 설정한다.
+- API 주소 제어는 `public/data-loader.js`의 `getApiBaseUrl()` 규칙을 따른다.

@@ -56,7 +56,7 @@
             </p>
             <div class="card" style="margin-top: 18px;">
               <button class="button primary" id="builderLoginBtn">Google 로그인</button>
-              <a class="button ghost" href="resume.html">기본 이력서 보기</a>
+              <a class="button ghost" href="#/resume">기본 이력서 보기</a>
             </div>
           </section>
         </div>
@@ -481,7 +481,7 @@
     /**
      * 데이터 로딩 전략(공통 로더 사용):
      *
-     * - assets/data-loader.js에 “Supabase(writer only) → API → 정적 JSON” 우선순위 로더를 구현해두었습니다.
+     * - public/data-loader.js에 “Supabase(writer only) → API → 정적 JSON” 우선순위 로더를 구현해두었습니다.
      * - 맞춤(builder)은 작성자 전용 기능이므로, targets는 Supabase에서도 writer만 읽을 수 있게 설계되어 있습니다.
      *
      * 반환 형태:

@@ -7,7 +7,7 @@
 
   사용:
   - 각 HTML에서 supabase.js보다 먼저 이 파일을 로드해야 합니다.
-  - 예: <script src="assets/supabase-config.js"></script>
+  - 예: <script src="/supabase-config.js"></script>
 
   보안 메모:
   - anon key는 공개 가능한 publishable key입니다.

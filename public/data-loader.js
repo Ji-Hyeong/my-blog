@@ -220,6 +220,29 @@
   }
 
   /**
+   * API 기본 URL을 계산합니다.
+   *
+   * - meta(name="api-base-url")가 있으면 해당 값을 사용합니다.
+   * - 로컬 환경(localhost)에서는 기본값(8080)을 사용합니다.
+   * - 배포 환경에서는 현재 오리진을 사용합니다.
+   */
+  const getApiBaseUrl = () => {
+    const meta = document.querySelector('meta[name="api-base-url"]')
+    const override = meta?.getAttribute('content')?.trim()
+    if (override) {
+      return override.replace(/\/$/, '')
+    }
+
+    const hostname = window.location.hostname
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+    if (isLocalhost) {
+      return 'http://localhost:8080'
+    }
+
+    return window.location.origin
+  }
+
+  /**
    * Profile 로딩: Supabase → API → 정적 JSON
    */
   const loadProfile = async () => {
@@ -231,7 +254,7 @@
     }
 
     // 2) API
-    const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || "http://localhost:8080"
+    const apiBaseUrl = getApiBaseUrl()
     try {
       return await fetchJsonOrThrow(`${apiBaseUrl}/api/profile`)
     } catch (error) {
@@ -254,7 +277,7 @@
     }
 
     // 2) API
-    const apiBaseUrl = window.JH_BLOG?.getApiBaseUrl?.() || "http://localhost:8080"
+    const apiBaseUrl = getApiBaseUrl()
     try {
       return await fetchJsonOrThrow(`${apiBaseUrl}/api/targets`)
     } catch (error) {
@@ -271,4 +294,3 @@
     loadTargets,
   }
 })()
-

@@ -31,6 +31,10 @@ body {
     linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
   font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -173,6 +177,11 @@ a {
 
 .nav-link:hover {
   background: var(--accent-2);
+  color: #ffffff;
+}
+
+.nav-link.is-active {
+  background: var(--accent);
   color: #ffffff;
 }
 

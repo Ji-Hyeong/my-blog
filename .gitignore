@@ -1,25 +1,24 @@
-# Node (web)
-web/node_modules/
-web/dist/
-web/.vite/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Gradle / Java (api)
-api/.gradle/
-api/build/
-api/out/
+node_modules
+dist
+dist-ssr
+*.local
 
-# Terraform
-infra/terraform/**/.terraform/
-infra/terraform/**/*.tfstate
-infra/terraform/**/*.tfstate.*
-infra/terraform/**/crash.log
-
-# IntelliJ / VSCode
-.idea/
-.vscode/
-
-# OS
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-
-# Local build cache
-.gradle-home/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

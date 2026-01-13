@@ -10,7 +10,7 @@
   - 1순위: API(`/api/profile`) 호출
   - 2순위: 정적 폴백(`/data/profile.json`)
     - GitHub Pages는 정적 호스팅이라 `/api/*`가 없을 수 있습니다.
-    - Pages 배포 워크플로우에서 `apps/api`의 JSON을 `apps/web/data/`로 복사해 함께 배포합니다.
+    - Pages 배포 워크플로우에서 JSON을 `public/data/`로 포함해 함께 배포합니다.
 */
 (() => {
   const title = document.getElementById('homeTitle');
@@ -28,11 +28,11 @@
    * profile 데이터를 가져옵니다.
    *
    * - 배포 환경에서 API가 없을 수 있으므로, 정적 폴백을 제공합니다.
-   * - API 기본 URL은 `assets/app.js`의 `getApiBaseUrl()` 규칙을 사용합니다.
+   * - API 기본 URL은 `public/data-loader.js` 내부 규칙을 사용합니다.
    */
   const loadProfile = async () => {
     /**
-     * assets/data-loader.js의 공통 로더를 사용합니다.
+     * public/data-loader.js의 공통 로더를 사용합니다.
      *
      * - Supabase로 전환하더라도 Home 로직은 유지하고,
      * - “어떤 소스에서 가져오는지”는 로더가 결정합니다.
