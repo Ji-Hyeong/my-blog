@@ -90,46 +90,37 @@ a {
   z-index: 10;
 }
 
-/* Global loading banner for Supabase fetch delay. */
-.loading-banner {
-  display: flex;
-  align-items: center;
+/* Center loading indicator for Supabase fetch delay. */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
   gap: 12px;
-  padding: 10px 24px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 250, 242, 0.96);
+  background: rgba(248, 242, 232, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 30;
   color: var(--ink-muted);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.02em;
 }
 
-.loading-bar {
-  width: 140px;
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  position: relative;
-  overflow: hidden;
-}
-
-.loading-bar::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
-  animation: loading-sheen 1.2s ease-in-out infinite;
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(199, 122, 63, 0.3);
+  border-top-color: var(--accent);
+  animation: loading-spin 0.9s linear infinite;
 }
 
 .loading-text {
   font-weight: 500;
 }
 
-@keyframes loading-sheen {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

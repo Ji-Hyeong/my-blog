@@ -1,6 +1,7 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: 데이터 로딩 표시를 상단 배너에서 중앙 스피너 오버레이로 변경(App.tsx, site.css).
 - 2026-01-09: Supabase 로딩 지연 시 로딩 배너를 표시하고 3초 타임아웃 후 폴백 데이터를 사용하도록 개선(App.tsx, data-loader.js, site.css).
 - 2026-01-09: `apps/web` 구조를 제거하고 Vite SPA를 레포 루트(apps)로 이동, 정적 자산을 `public/` 기준으로 정리.
 - 2026-01-09: 정적 HTML을 React SPA(Hash 라우팅)로 전환하고 빌드 기반 GitHub Pages 배포로 재구성(App.tsx, main.tsx, public/*, vite.config.ts, pages.yml).
