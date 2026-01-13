@@ -639,7 +639,6 @@ function App() {
       {dataLoading ? (
         <div className="loading-overlay" role="status" aria-live="polite">
           <div className="loading-spinner" aria-hidden="true" />
-          <span className="loading-text">데이터를 불러오는 중입니다…</span>
         </div>
       ) : null}
       <div className={`page-shell ${dataLoading ? 'is-loading' : ''}`}>
