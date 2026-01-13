@@ -41,6 +41,26 @@
     Boolean(window.JH_SUPABASE?.getSupabaseClient && window.JH_SUPABASE?.getSession)
 
   /**
+   * GitHub Pages에서 유니코드 파일명이 정규화(NFC/NFD) 차이로 404가 나는 이슈를 예방합니다.
+   *
+   * - 아이콘 경로가 한글 파일명일 때 ASCII 별칭으로 강제 매핑합니다.
+   * - Supabase/정적 JSON 어디에서 오든 동일하게 동작하도록 공통 처리합니다.
+   */
+  const normalizeIconImagePath = (path) => {
+    if (!path) {
+      return path
+    }
+    const normalized = String(path)
+    if (normalized.includes("유니크굿")) {
+      return "logo/unique-good.jpg"
+    }
+    if (normalized.includes("아이아라")) {
+      return "logo/aiara.png"
+    }
+    return normalized
+  }
+
+  /**
    * Supabase에서 “프로필 데이터(profile.json 형태)”를 구성합니다.
    *
    * - DB 스키마는 docs/supabase.md의 "이력/타겟 데이터 스키마"를 기준으로 합니다.
@@ -173,7 +193,7 @@
         summary: company.summary,
         projects: projectsByCompany.get(company.id) || [],
         initiatives: initiativesByCompany.get(company.id) || [],
-        iconImage: company.icon_image,
+        iconImage: normalizeIconImagePath(company.icon_image),
         iconText: company.icon_text,
       })),
       intro: profileRow.intro,
