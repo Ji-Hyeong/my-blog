@@ -18,6 +18,13 @@
 */
 (() => {
   /**
+   * Supabase 응답이 느릴 때 폴백으로 전환하기 위한 제한 시간(ms)입니다.
+   *
+   * - 3초 안에 응답이 없으면 기본(폴백) 데이터를 즉시 사용합니다.
+   */
+  const SUPABASE_TIMEOUT_MS = 3000
+
+  /**
    * JSON을 안전하게 fetch합니다.
    *
    * - fetch는 404/500이어도 throw하지 않으므로, status를 확인해 명시적으로 실패 처리합니다.
@@ -39,6 +46,43 @@
    */
   const isSupabaseReady = () =>
     Boolean(window.JH_SUPABASE?.getSupabaseClient && window.JH_SUPABASE?.getSession)
+
+  /**
+   * 데이터 로딩 상태를 전역 이벤트로 브로드캐스트합니다.
+   *
+   * - React 쉘에서 로딩 바/배너를 표시하는 데 사용합니다.
+   */
+  const notifyLoading = (key, state) => {
+    window.dispatchEvent(
+      new CustomEvent("jh-data-loading", {
+        detail: { key, state },
+      })
+    )
+  }
+
+  /**
+   * 지정 시간 안에 완료되지 않으면 타임아웃 에러로 처리합니다.
+   *
+   * - Supabase 호출 지연 시 빠르게 폴백 경로로 전환하기 위해 사용합니다.
+   */
+  const withTimeout = (promise, timeoutMs) =>
+    new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        const error = new Error("Supabase timeout")
+        error.name = "TimeoutError"
+        reject(error)
+      }, timeoutMs)
+
+      promise
+        .then((value) => {
+          clearTimeout(timer)
+          resolve(value)
+        })
+        .catch((error) => {
+          clearTimeout(timer)
+          reject(error)
+        })
+    })
 
   /**
    * GitHub Pages에서 유니코드 파일명이 정규화(NFC/NFD) 차이로 404가 나는 이슈를 예방합니다.
@@ -266,46 +310,56 @@
    * Profile 로딩: Supabase → API → 정적 JSON
    */
   const loadProfile = async () => {
-    // 1) Supabase
+    notifyLoading("profile", "start")
     try {
-      return await loadProfileFromSupabase()
-    } catch (error) {
-      // migration 전이거나 네트워크/권한 문제일 수 있으므로 폴백합니다.
-    }
+      // 1) Supabase (3초 타임아웃)
+      try {
+        return await withTimeout(loadProfileFromSupabase(), SUPABASE_TIMEOUT_MS)
+      } catch (error) {
+        // migration 전이거나 네트워크/권한/지연 문제일 수 있으므로 폴백합니다.
+      }
 
-    // 2) API
-    const apiBaseUrl = getApiBaseUrl()
-    try {
-      return await fetchJsonOrThrow(`${apiBaseUrl}/api/profile`)
-    } catch (error) {
-      // continue
-    }
+      // 2) API
+      const apiBaseUrl = getApiBaseUrl()
+      try {
+        return await fetchJsonOrThrow(`${apiBaseUrl}/api/profile`)
+      } catch (error) {
+        // continue
+      }
 
-    // 3) static
-    return fetchJsonOrThrow("/data/profile.json")
+      // 3) static
+      return await fetchJsonOrThrow("/data/profile.json")
+    } finally {
+      notifyLoading("profile", "end")
+    }
   }
 
   /**
    * Targets 로딩: Supabase(writer only) → API → 정적 JSON
    */
   const loadTargets = async () => {
-    // 1) Supabase(writer only)
+    notifyLoading("targets", "start")
     try {
-      return await loadTargetsFromSupabase()
-    } catch (error) {
-      // continue
-    }
+      // 1) Supabase(writer only, 3초 타임아웃)
+      try {
+        return await withTimeout(loadTargetsFromSupabase(), SUPABASE_TIMEOUT_MS)
+      } catch (error) {
+        // continue
+      }
 
-    // 2) API
-    const apiBaseUrl = getApiBaseUrl()
-    try {
-      return await fetchJsonOrThrow(`${apiBaseUrl}/api/targets`)
-    } catch (error) {
-      // continue
-    }
+      // 2) API
+      const apiBaseUrl = getApiBaseUrl()
+      try {
+        return await fetchJsonOrThrow(`${apiBaseUrl}/api/targets`)
+      } catch (error) {
+        // continue
+      }
 
-    // 3) static
-    return fetchJsonOrThrow("/data/targets.json")
+      // 3) static
+      return await fetchJsonOrThrow("/data/targets.json")
+    } finally {
+      notifyLoading("targets", "end")
+    }
   }
 
   window.JH_DATA = {

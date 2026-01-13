@@ -163,6 +163,38 @@ const useGithubUrl = () => {
   return url
 }
 
+const useDataLoading = () => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    let pending = 0
+
+    /**
+     * data-loader.js에서 발생시키는 전역 로딩 이벤트를 수집합니다.
+     *
+     * - 여러 데이터 요청이 겹쳐도 카운트를 통해 로딩 상태를 안정적으로 유지합니다.
+     */
+    const handleLoading = (event: Event) => {
+      const detail = (event as CustomEvent<{ state?: string }>).detail || {}
+      if (detail.state === 'start') {
+        pending += 1
+      }
+      if (detail.state === 'end') {
+        pending = Math.max(0, pending - 1)
+      }
+      setIsLoading(pending > 0)
+    }
+
+    window.addEventListener('jh-data-loading', handleLoading as EventListener)
+
+    return () => {
+      window.removeEventListener('jh-data-loading', handleLoading as EventListener)
+    }
+  }, [])
+
+  return isLoading
+}
+
 const useLegacyScript = (src: string, enabled = true) => {
   useEffect(() => {
     if (!enabled) {
@@ -582,6 +614,7 @@ function App() {
   const route = useHashRoute()
   const { session, isWriter } = useSupabaseSession()
   const githubUrl = useGithubUrl()
+  const dataLoading = useDataLoading()
 
   useEffect(() => {
     /**
@@ -603,12 +636,20 @@ function App() {
   return (
     <>
       <Header isWriter={isWriter} session={session} githubUrl={githubUrl} activeRoute={headerRoute} />
-      {route.name === 'home' && <HomePage />}
-      {route.name === 'resume' && <ResumePage />}
-      {route.name === 'builder' && <BuilderPage isWriter={isWriter} />}
-      {route.name === 'blog' && <BlogPage isWriter={isWriter} />}
-      {route.name === 'post' && <PostPage />}
-      {route.name === 'not-found' && <NotFoundPage />}
+      {dataLoading ? (
+        <div className="loading-banner" role="status" aria-live="polite">
+          <span className="loading-bar" aria-hidden="true" />
+          <span className="loading-text">데이터를 불러오는 중입니다…</span>
+        </div>
+      ) : null}
+      <div className={`page-shell ${dataLoading ? 'is-loading' : ''}`}>
+        {route.name === 'home' && <HomePage />}
+        {route.name === 'resume' && <ResumePage />}
+        {route.name === 'builder' && <BuilderPage isWriter={isWriter} />}
+        {route.name === 'blog' && <BlogPage isWriter={isWriter} />}
+        {route.name === 'post' && <PostPage />}
+        {route.name === 'not-found' && <NotFoundPage />}
+      </div>
       <Footer />
     </>
   )

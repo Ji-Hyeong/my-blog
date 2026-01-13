@@ -39,6 +39,17 @@ body {
   flex-direction: column;
 }
 
+/* Route content wrapper for fade-in after data loading. */
+.page-shell {
+  flex: 1 0 auto;
+  transition: opacity 0.25s ease;
+}
+
+.page-shell.is-loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
 main {
   flex: 1 0 auto;
 }
@@ -77,6 +88,49 @@ a {
   background: rgba(255, 251, 246, 0.92);
   backdrop-filter: blur(8px);
   z-index: 10;
+}
+
+/* Global loading banner for Supabase fetch delay. */
+.loading-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 250, 242, 0.96);
+  color: var(--ink-muted);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.loading-bar {
+  width: 140px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
+  animation: loading-sheen 1.2s ease-in-out infinite;
+}
+
+.loading-text {
+  font-weight: 500;
+}
+
+@keyframes loading-sheen {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .nav-row {
