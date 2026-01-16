@@ -19,6 +19,7 @@ on:
       - "public/**"
       - "index.html"
       - "package.json"
+      - ".env.production"
       - "vite.config.ts"
       - "tsconfig*.json"
       - "eslint.config.js"

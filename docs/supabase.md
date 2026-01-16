@@ -7,11 +7,9 @@
 ## 0) 운영/배포 메모
 
 - 콘솔: https://supabase.com/dashboard
-- 프론트 설정은 `apps/public/supabase-config.js`에서 한 곳에 관리합니다.
-  - `url`, `anonKey`, `writerEmail`을 수정합니다.
-- 필요하면 HTML meta로 페이지별 오버라이드가 가능합니다.
-  - `supabase-url`, `supabase-anon-key`, `writer-email`
-  - 예: `<meta name="supabase-url" content="...">`
+- 프론트 설정은 Vite env로 관리합니다.
+  - `.env` / `.env.production`에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_WRITER_EMAIL`을 설정합니다.
+  - 로컬 API를 쓰는 경우 `VITE_API_BASE_URL`을 함께 지정합니다.
 
 ## 1) Supabase Auth (Google OAuth)
 
@@ -20,10 +18,10 @@
 2. Google Cloud Console에서 OAuth Client 생성 후 Client ID/Secret 설정
 
 ### Redirect URL 등록(중요)
-정적 사이트는 callback 페이지로 돌아오도록 구성했습니다.
+정적 사이트는 Hash 라우팅 콜백으로 돌아오도록 구성했습니다.
 
-- 배포: `https://blog.jihyeong.com/auth/callback.html`
-- 로컬: `http://localhost:8000/auth/callback.html`
+- 배포: `https://blog.jihyeong.com/#/auth/callback`
+- 로컬: `http://localhost:8000/#/auth/callback`
 
 Supabase Dashboard → Authentication → URL Configuration(또는 Providers 설정)에서
 위 URL들이 허용되도록 등록하세요.
@@ -117,12 +115,12 @@ using ((auth.jwt() ->> 'email') = 'wlgud30@gmail.com');
 
 ## 4) 프론트 코드 위치
 
-- Supabase 설정: `apps/public/supabase-config.js`
-- Supabase 클라이언트: `apps/public/supabase.js`
+- Supabase 설정: `apps/src/supabase-runtime.ts` (Vite env → window 설정)
+- Supabase 클라이언트: `apps/src/supabase-client.ts`
 - 데이터 로더: `apps/public/data-loader.js`
 - 레거시 페이지 스크립트: `apps/public/legacy/*.js`
 - SPA 라우팅/레이아웃: `apps/src/App.tsx`
-- OAuth 콜백: `apps/public/auth/callback.html`
+- OAuth 콜백: `#/auth/callback` (SPA 라우트)
 
 ## 5) 로컬 확인
 
@@ -140,8 +138,8 @@ npm run dev
 ## 5-2) 배포 확인 플로우
 
 1. Supabase Dashboard에서 Auth → Providers → Google 설정과 Redirect URL이 정확한지 확인합니다.
-2. `apps/public/supabase-config.js`가 배포 산출물에 포함되는지 확인합니다.
-3. 배포 후 `https://<domain>/auth/callback.html`에 직접 접근해 콜백 페이지가 로드되는지 확인합니다.
+2. `.env.production` 값이 CI 빌드에 반영되었는지 확인합니다.
+3. 배포 후 `https://<domain>/#/auth/callback`으로 리다이렉트되는지 확인합니다.
 4. 메인 페이지에서 로그인 → 글쓰기/편집 권한이 writer 계정에만 노출되는지 확인합니다.
 
 ---

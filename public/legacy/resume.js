@@ -153,7 +153,7 @@
         <p>
           Supabase 또는 정적 데이터 로딩에 실패했습니다.
           <br />
-          <code>public/supabase-config.js</code> 설정과 네트워크 상태를 확인해 주세요.
+          Vite 환경변수(<code>VITE_SUPABASE_URL</code> 등)와 네트워크 상태를 확인해 주세요.
         </p>
       </div>
     `;

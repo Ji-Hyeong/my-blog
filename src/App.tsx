@@ -7,7 +7,14 @@
  */
 import { useEffect, useMemo, useState, type FC, type ReactNode } from 'react'
 
-type RouteName = 'home' | 'resume' | 'builder' | 'blog' | 'post' | 'not-found'
+type RouteName =
+  | 'home'
+  | 'resume'
+  | 'builder'
+  | 'blog'
+  | 'post'
+  | 'auth-callback'
+  | 'not-found'
 
 type RouteState = {
   name: RouteName
@@ -45,6 +52,9 @@ const parseRoute = (): RouteState => {
   }
   if (parts[0] === 'post' && parts[1]) {
     return { name: 'post', slug: parts[1] }
+  }
+  if (parts[0] === 'auth' && parts[1] === 'callback') {
+    return { name: 'auth-callback' }
   }
 
   return { name: 'not-found' }
@@ -597,6 +607,110 @@ const PostPage = () => {
   )
 }
 
+const AuthCallbackPage = () => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    /**
+     * hash 라우팅에서 query가 포함될 수 있어 URL과 hash를 모두 파싱합니다.
+     */
+    const readAuthCode = () => {
+      const url = new URL(window.location.href)
+      const directCode = url.searchParams.get('code')
+      if (directCode) {
+        return directCode
+      }
+
+      const hash = window.location.hash || ''
+      const queryIndex = hash.indexOf('?')
+      if (queryIndex === -1) {
+        return null
+      }
+      const query = hash.slice(queryIndex + 1)
+      const params = new URLSearchParams(query)
+      return params.get('code')
+    }
+
+    /**
+     * returnTo가 다른 오리진이면 무시하고 현재 사이트로 복귀합니다.
+     */
+    const resolveReturnTo = () => {
+      const fallback = '/#/'
+      const raw = localStorage.getItem('jh_return_to') || ''
+      if (!raw) {
+        return fallback
+      }
+      if (raw.startsWith('#')) {
+        return `/${raw}`
+      }
+      if (raw.startsWith('/')) {
+        return raw
+      }
+
+      try {
+        const parsed = new URL(raw)
+        if (parsed.origin === window.location.origin) {
+          return `${parsed.pathname}${parsed.search}${parsed.hash}`
+        }
+      } catch (error) {
+        // ignore parse errors
+      }
+
+      return fallback
+    }
+
+    const handleCallback = async () => {
+      try {
+        if (!window.JH_SUPABASE?.getSupabaseClient) {
+          throw new Error('Supabase client가 준비되지 않았습니다.')
+        }
+
+        const client = await window.JH_SUPABASE.getSupabaseClient()
+        const code = readAuthCode()
+
+        if (code) {
+          await client.auth.exchangeCodeForSession(code)
+        }
+
+        await client.auth.getSessionFromUrl({ storeSession: true })
+        const { data } = await client.auth.getSession()
+        const session = data?.session || null
+
+        if (!session) {
+          throw new Error('로그인 세션을 확인하지 못했습니다.')
+        }
+
+        localStorage.removeItem('jh_return_to')
+        window.location.replace(resolveReturnTo())
+      } catch (error) {
+        if (isMounted) {
+          setErrorMessage(
+            '로그인 처리에 실패했습니다. 새로고침 후 다시 시도해 주세요.'
+          )
+        }
+      }
+    }
+
+    handleCallback()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  return (
+    <main className="container page">
+      <div className="card">
+        <h2>로그인 처리 중…</h2>
+        <p className="page-desc">잠시만 기다려 주세요.</p>
+        {errorMessage ? <p className="page-desc">{errorMessage}</p> : null}
+      </div>
+    </main>
+  )
+}
+
 const NotFoundPage = () => {
   return (
     <main className="container page">
@@ -647,6 +761,7 @@ function App() {
         {route.name === 'builder' && <BuilderPage isWriter={isWriter} />}
         {route.name === 'blog' && <BlogPage isWriter={isWriter} />}
         {route.name === 'post' && <PostPage />}
+        {route.name === 'auth-callback' && <AuthCallbackPage />}
         {route.name === 'not-found' && <NotFoundPage />}
       </div>
       <Footer />

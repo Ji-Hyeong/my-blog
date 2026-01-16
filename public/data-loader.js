@@ -41,7 +41,7 @@
   /**
    * Supabase client가 준비되었는지 확인합니다.
    *
-   * - supabase.js는 CDN ESM import를 사용하므로, 네트워크 정책/광고 차단 등에 의해 실패할 수 있습니다.
+   * - supabase-client는 CDN ESM import를 사용하므로, 네트워크 정책/광고 차단 등에 의해 실패할 수 있습니다.
    * - 실패 시에는 기존 API/정적 JSON로 폴백합니다.
    */
   const isSupabaseReady = () =>
@@ -293,7 +293,7 @@
   const getApiBaseUrl = () => {
     const meta = document.querySelector('meta[name="api-base-url"]')
     const override = meta?.getAttribute('content')?.trim()
-    if (override) {
+    if (override && override !== 'undefined' && override !== 'null') {
       return override.replace(/\/$/, '')
     }
 
