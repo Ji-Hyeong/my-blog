@@ -1,6 +1,7 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-09: 사이트 URL/엔드포인트를 Vite 환경변수로 분리하고 Supabase 로그인 리다이렉트를 고정 도메인으로 정리(supabase-runtime.ts, supabase-client.ts, index.html, env).
 - 2026-01-09: Supabase 설정을 Vite 환경변수로 전환하고 OAuth 콜백을 `#/auth/callback` 해시 라우트로 통합(supabase-runtime.ts, supabase-client.ts, App.tsx, docs/README).
 - 2026-01-09: 로딩 오버레이 텍스트를 제거하고 스피너만 표시하도록 단순화(App.tsx, site.css).
 - 2026-01-09: 데이터 로딩 표시를 상단 배너에서 중앙 스피너 오버레이로 변경(App.tsx, site.css).

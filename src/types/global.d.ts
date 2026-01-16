@@ -6,6 +6,7 @@ declare global {
       url?: string
       anonKey?: string
       writerEmail?: string
+      siteUrl?: string
     }
     JH_SUPABASE?: {
       getSupabaseClient?: () => Promise<unknown>

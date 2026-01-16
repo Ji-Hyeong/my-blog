@@ -297,6 +297,12 @@
       return override.replace(/\/$/, '')
     }
 
+    const siteMeta = document.querySelector('meta[name="site-url"]')
+    const siteUrl = siteMeta?.getAttribute('content')?.trim()
+    if (siteUrl && siteUrl !== 'undefined' && siteUrl !== 'null') {
+      return siteUrl.replace(/\/$/, '')
+    }
+
     const hostname = window.location.hostname
     const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
     if (isLocalhost) {

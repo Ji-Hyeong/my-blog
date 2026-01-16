@@ -21,6 +21,7 @@ const getSupabaseConfig = () => {
     url: supabaseRuntimeConfig.url,
     anonKey: supabaseRuntimeConfig.anonKey,
     writerEmail: supabaseRuntimeConfig.writerEmail,
+    siteUrl: supabaseRuntimeConfig.siteUrl,
   }
 }
 
@@ -61,8 +62,9 @@ const isWriter = (session: { user?: { email?: string } } | null) => {
 
 const signInWithGoogle = async ({ returnTo }: { returnTo?: string } = {}) => {
   const client = await getSupabaseClient()
-  const origin = window.location.origin
-  const callbackUrl = `${origin}/#/auth/callback`
+  const { siteUrl } = getSupabaseConfig()
+  const origin = siteUrl || window.location.origin
+  const callbackUrl = `${origin.replace(/\/$/, '')}/#/auth/callback`
 
   const fallbackReturnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`
   localStorage.setItem('jh_return_to', returnTo || fallbackReturnTo)

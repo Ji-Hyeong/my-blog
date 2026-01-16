@@ -8,7 +8,7 @@
 
 - 콘솔: https://supabase.com/dashboard
 - 프론트 설정은 Vite env로 관리합니다.
-  - `.env` / `.env.production`에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_WRITER_EMAIL`을 설정합니다.
+  - `.env` / `.env.production`에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_WRITER_EMAIL`, `VITE_SITE_URL`을 설정합니다.
   - 로컬 API를 쓰는 경우 `VITE_API_BASE_URL`을 함께 지정합니다.
 
 ## 1) Supabase Auth (Google OAuth)

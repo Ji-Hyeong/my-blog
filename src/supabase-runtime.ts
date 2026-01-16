@@ -8,12 +8,14 @@ type SupabaseRuntimeConfig = {
   url: string
   anonKey: string
   writerEmail: string
+  siteUrl: string
 }
 
 const config: SupabaseRuntimeConfig = {
   url: (import.meta.env.VITE_SUPABASE_URL || '').trim(),
   anonKey: (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim(),
   writerEmail: (import.meta.env.VITE_WRITER_EMAIL || '').trim(),
+  siteUrl: (import.meta.env.VITE_SITE_URL || '').trim(),
 }
 
 if (!config.url || !config.anonKey) {
@@ -22,6 +24,10 @@ if (!config.url || !config.anonKey) {
 
 if (!config.writerEmail) {
   console.warn('[supabase] writer email이 비어 있습니다. VITE_WRITER_EMAIL을 확인하세요.')
+}
+
+if (!config.siteUrl) {
+  console.warn('[supabase] site url이 비어 있습니다. VITE_SITE_URL을 확인하세요.')
 }
 
 window.JH_SUPABASE_CONFIG = config
