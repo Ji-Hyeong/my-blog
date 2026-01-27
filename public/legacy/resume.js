@@ -11,6 +11,20 @@
     return;
   }
 
+  /**
+   * 현재 해시 라우트가 포트폴리오인지 판별합니다.
+   *
+   * - App.tsx는 `#/resume`, `#/portfolio`로 라우팅합니다.
+   * - 동일한 레거시 렌더러를 재사용하되, 라우트에 따라 표현을 분기합니다.
+   */
+  const resolveViewMode = () => {
+    const rawHash = String(window.location.hash || '').toLowerCase();
+    return rawHash.startsWith('#/portfolio') ? 'portfolio' : 'resume';
+  };
+
+  // 렌더 시점의 모드를 고정해 동일한 DOM 업데이트 내에서 일관성을 유지합니다.
+  const viewMode = resolveViewMode();
+
   const renderTagRow = (tags) =>
     tags.map((tag) => `<span class="tag">${tag}</span>`).join('');
 
@@ -83,14 +97,60 @@
     return '';
   };
 
-  const renderCompanyProjects = (items, title) => {
-    if (!items.length) {
+  /**
+   * visibility 규칙에 따라 현재 뷰에서 노출 가능한지 판별합니다.
+   *
+   * - 명시되지 않은 경우 기본값은 `both`로 간주합니다.
+   * - `resume`은 이력서, `portfolio`는 포트폴리오 뷰입니다.
+   */
+  const isVisibleInMode = (item, mode) => {
+    const visibility = String(item?.visibility || 'both').toLowerCase();
+    if (visibility === 'both') {
+      return true;
+    }
+    return visibility === mode;
+  };
+
+  /**
+   * 포트폴리오 전용 구조(배경/주요 작업/성과)를 렌더링합니다.
+   *
+   * - 데이터에 `portfolio`가 없으면 일반 요약/성과 렌더링으로 폴백합니다.
+   */
+  const renderPortfolioSections = (item) => {
+    const portfolio = item?.portfolio || {};
+    const background = portfolio.background || item.summary || '';
+    const highlights = Array.isArray(portfolio.highlights) ? portfolio.highlights : [];
+    const impacts = Array.isArray(portfolio.impact) ? portfolio.impact : [];
+
+    const highlightList = highlights.length
+      ? `<ul>${highlights.map((detail) => `<li>${detail}</li>`).join('')}</ul>`
+      : '';
+    const impactList = impacts.length
+      ? `<ul>${impacts.map((detail) => `<li>${detail}</li>`).join('')}</ul>`
+      : '';
+
+    return `
+      ${background ? `<div><strong>배경:</strong> ${background}</div>` : ''}
+      ${highlightList ? `<div><strong>주요 작업:</strong></div>${highlightList}` : ''}
+      ${
+        impactList
+          ? `<div><strong>성과:</strong></div>${impactList}`
+          : item.impact
+          ? `<div><strong>성과:</strong> ${item.impact}</div>`
+          : ''
+      }
+    `;
+  };
+
+  const renderCompanyProjects = (items, title, mode) => {
+    const visibleItems = items.filter((item) => isVisibleInMode(item, mode));
+    if (!visibleItems.length) {
       return '';
     }
     return `
       <div class="company-group">
         <p class="company-label">${title}</p>
-        ${items
+        ${visibleItems
           .map(
             (item) => `
           <div class="company-item">
@@ -98,8 +158,13 @@
             <div class="company-item-meta">${item.period || ''}${
               item.role ? ` · ${item.role}` : ''
             }</div>
-            <div>${item.summary}</div>
-            <div><strong>성과:</strong> ${item.impact}</div>
+            ${
+              mode === 'portfolio'
+                ? renderPortfolioSections(item)
+                : `<div>${item.resumeSummary || item.summary || ''}</div>${
+                    item.impact ? `<div><strong>성과:</strong> ${item.impact}</div>` : ''
+                  }`
+            }
             ${
               item.details && item.details.length
                 ? `<ul>${item.details.map((detail) => `<li>${detail}</li>`).join('')}</ul>`
@@ -132,8 +197,12 @@
         <p class="resume-muted">${company.role} · ${company.period}</p>
       </div>
       ${company.summary ? `<p>${company.summary}</p>` : ''}
-      ${renderCompanyProjects(projects, '프로젝트')}
-      ${renderCompanyProjects(initiatives, '개선/표준화')}
+      ${renderCompanyProjects(projects, viewMode === 'portfolio' ? '프로젝트 상세' : '프로젝트', viewMode)}
+      ${renderCompanyProjects(
+        initiatives,
+        viewMode === 'portfolio' ? '개선/표준화 상세' : '개선/표준화',
+        viewMode
+      )}
     </article>
   `;
   };
@@ -180,8 +249,19 @@
      * - 데이터가 없을 수 있으므로, 렌더링은 조건부로 처리합니다.
      */
     const trainings = Array.isArray(data.trainings) ? data.trainings : [];
+    const pageTitle = viewMode === 'portfolio' ? '포트폴리오' : '이력서';
+    const pageDesc =
+      viewMode === 'portfolio'
+        ? '프로젝트의 배경, 의사결정, 결과를 더 길고 구체적으로 설명합니다.'
+        : '핵심 성과와 실행 요약을 빠르게 스캔할 수 있도록 정리합니다.';
     // 메인 이력서 레이아웃: 상단 요약 → 경력 → 기술 → 성과 → 학력 순으로 정렬합니다.
     resumeRoot.innerHTML = `
+        <section class="section">
+          <div class="card resume-card">
+            <p class="eyebrow">${pageTitle}</p>
+            <p class="resume-muted">${pageDesc}</p>
+          </div>
+        </section>
         <section class="section resume-hero">
           <div class="card resume-card resume-hero-card">
             <div class="resume-hero-top">
@@ -207,7 +287,7 @@
         </section>
 
         <section class="section">
-          <h2>경력</h2>
+          <h2>${viewMode === 'portfolio' ? '경력 및 프로젝트' : '경력'}</h2>
           ${companies.length ? companies.map(renderCompany).join('') : '<p>아직 작성 중입니다.</p>'}
         </section>
 

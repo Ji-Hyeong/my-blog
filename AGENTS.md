@@ -1,6 +1,7 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-27: `#/resume`과 `#/portfolio`가 동일 렌더를 보이던 문제를 해결하기 위해 레거시 이력서 렌더러가 해시 라우트를 인식해 `visibility/resumeSummary/portfolio` 필드를 분기 적용하도록 개선(`public/legacy/resume.js`).
 - 2026-01-27: 정적 프로필 데이터와 Supabase 테이블 동기화 작업을 완료하고, 로컬 OAuth 오리진을 `http://localhost:5173`로 고정(`.env.development`).
 - 2026-01-27: Supabase 원격 import를 로컬 의존성으로 전환해 타입 안정성을 확보하고 빌드 에러를 해결, `#/portfolio` 라우트 및 헤더 탭을 추가해 이력서/포트폴리오 UI 분리를 시작(profile.json, App.tsx, supabase-client.ts, global.d.ts, package.json).
 - 2026-01-09: 사이트 URL/엔드포인트를 Vite 환경변수로 분리하고 Supabase 로그인 리다이렉트를 고정 도메인으로 정리(supabase-runtime.ts, supabase-client.ts, index.html, env).
