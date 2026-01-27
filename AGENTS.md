@@ -40,5 +40,6 @@
 - 2026-01-09: 블로그 글 목록 로딩 실패 시 메시지를 Supabase/정적 폴백 상황에 맞게 개선하고 폴백 우선순위를 정적→API로 변경(blog.js).
 
 ## 메모
+- 이 프로젝트의 Git 레포 루트는 `apps/`이며, Git 명령은 기본적으로 `apps` 기준으로 수행합니다.
 - `reference/`, `me/`는 프론트 배포 범위에 포함하지 않음(민감/비공개 자료).
 - API 주소 제어는 `public/data-loader.js`의 `getApiBaseUrl()` 규칙을 따른다.
