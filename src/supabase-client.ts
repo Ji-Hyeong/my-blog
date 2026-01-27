@@ -1,20 +1,12 @@
 /**
  * Supabase 클라이언트 헬퍼를 브라우저에서 초기화합니다.
  *
- * - CDN ESM import로 @supabase/supabase-js를 로드합니다.
+ * - 원격 CDN import는 TypeScript에서 타입을 `unknown`으로 전파시켜 빌드를 깨뜨리므로,
+ *   npm 의존성(@supabase/supabase-js)으로 고정해 타입 안정성을 확보합니다.
  * - 기존 정적 스크립트가 window.JH_SUPABASE를 참조하므로 동일한 API를 제공합니다.
  */
+import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js'
 import { supabaseRuntimeConfig } from './supabase-runtime'
-
-const loadSupabaseLibrary = async () => {
-  if (window.__JH_SUPABASE_LIB) {
-    return window.__JH_SUPABASE_LIB
-  }
-
-  const lib = await import('https://esm.sh/@supabase/supabase-js@2.49.1')
-  window.__JH_SUPABASE_LIB = lib
-  return lib
-}
 
 const getSupabaseConfig = () => {
   return {
@@ -25,9 +17,10 @@ const getSupabaseConfig = () => {
   }
 }
 
-const getSupabaseClient = async () => {
-  if (window.__JH_SUPABASE_CLIENT) {
-    return window.__JH_SUPABASE_CLIENT
+const getSupabaseClient = async (): Promise<SupabaseClient> => {
+  const cachedClient = window.__JH_SUPABASE_CLIENT
+  if (cachedClient) {
+    return cachedClient
   }
 
   const { url, anonKey } = getSupabaseConfig()
@@ -35,7 +28,7 @@ const getSupabaseClient = async () => {
     throw new Error('Supabase 설정이 비어 있습니다. Vite env를 확인하세요.')
   }
 
-  const { createClient } = await loadSupabaseLibrary()
+  // 타입이 명확한 로컬 의존성 createClient를 사용해 SupabaseClient를 생성합니다.
   const client = createClient(url, anonKey, {
     auth: {
       persistSession: true,
@@ -54,7 +47,7 @@ const getSession = async () => {
   return data.session || null
 }
 
-const isWriter = (session: { user?: { email?: string } } | null) => {
+const isWriter = (session: Session | null) => {
   const { writerEmail } = getSupabaseConfig()
   const email = session?.user?.email || ''
   return email.toLowerCase() === writerEmail.toLowerCase()

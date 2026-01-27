@@ -1,6 +1,7 @@
 # AGENTS (apps)
 
 ## 프로젝트 변경 이력
+- 2026-01-27: Supabase 원격 import를 로컬 의존성으로 전환해 타입 안정성을 확보하고 빌드 에러를 해결, `#/portfolio` 라우트 및 헤더 탭을 추가해 이력서/포트폴리오 UI 분리를 시작(profile.json, App.tsx, supabase-client.ts, global.d.ts, package.json).
 - 2026-01-09: 사이트 URL/엔드포인트를 Vite 환경변수로 분리하고 Supabase 로그인 리다이렉트를 고정 도메인으로 정리(supabase-runtime.ts, supabase-client.ts, index.html, env).
 - 2026-01-09: Supabase 설정을 Vite 환경변수로 전환하고 OAuth 콜백을 `#/auth/callback` 해시 라우트로 통합(supabase-runtime.ts, supabase-client.ts, App.tsx, docs/README).
 - 2026-01-09: 로딩 오버레이 텍스트를 제거하고 스피너만 표시하도록 단순화(App.tsx, site.css).

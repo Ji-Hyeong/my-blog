@@ -6,10 +6,12 @@
  * - Supabase session is used to show/hide writer-only tabs.
  */
 import { useEffect, useMemo, useState, type FC, type ReactNode } from 'react'
+import type { Session } from '@supabase/supabase-js'
 
 type RouteName =
   | 'home'
   | 'resume'
+  | 'portfolio'
   | 'builder'
   | 'blog'
   | 'post'
@@ -44,6 +46,9 @@ const parseRoute = (): RouteState => {
   if (parts[0] === 'resume') {
     return { name: 'resume' }
   }
+  if (parts[0] === 'portfolio') {
+    return { name: 'portfolio' }
+  }
   if (parts[0] === 'builder') {
     return { name: 'builder' }
   }
@@ -76,7 +81,7 @@ const useHashRoute = () => {
 }
 
 const useSupabaseSession = () => {
-  const [session, setSession] = useState<unknown>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -276,6 +281,9 @@ const Header: FC<{
           <a className={`nav-link ${isActive('resume')}`} href="#/resume">
             이력서
           </a>
+          <a className={`nav-link ${isActive('portfolio')}`} href="#/portfolio">
+            포트폴리오
+          </a>
           {isWriter && (
             <a className={`nav-link ${isActive('builder')}`} href="#/builder">
               맞춤
@@ -381,6 +389,23 @@ const ResumePage = () => {
 
   return (
     <main className="container page">
+      <section id="resume" className="section reveal" data-delay="0.1"></section>
+    </main>
+  )
+}
+
+const PortfolioPage = () => {
+  useLegacyScript('/legacy/resume.js')
+
+  return (
+    <main className="container page">
+      <section className="section reveal" data-delay="0.05">
+        <h1 className="page-title">포트폴리오</h1>
+        <p className="page-desc">
+          이력서보다 프로젝트 맥락과 의사결정을 더 길고 구체적으로 설명하는 뷰입니다.
+        </p>
+      </section>
+      {/* 레거시 이력서 렌더러가 #resume 루트를 기준으로 동작하므로 동일한 루트를 재사용합니다. */}
       <section id="resume" className="section reveal" data-delay="0.1"></section>
     </main>
   )
@@ -674,7 +699,7 @@ const AuthCallbackPage = () => {
           await client.auth.exchangeCodeForSession(code)
         }
 
-        await client.auth.getSessionFromUrl({ storeSession: true })
+        // v2 auth 클라이언트에는 getSessionFromUrl이 없으므로 exchangeCodeForSession으로 충분합니다.
         const { data } = await client.auth.getSession()
         const session = data?.session || null
 
@@ -758,6 +783,7 @@ function App() {
       <div className={`page-shell ${dataLoading ? 'is-loading' : ''}`}>
         {route.name === 'home' && <HomePage />}
         {route.name === 'resume' && <ResumePage />}
+        {route.name === 'portfolio' && <PortfolioPage />}
         {route.name === 'builder' && <BuilderPage isWriter={isWriter} />}
         {route.name === 'blog' && <BlogPage isWriter={isWriter} />}
         {route.name === 'post' && <PostPage />}
